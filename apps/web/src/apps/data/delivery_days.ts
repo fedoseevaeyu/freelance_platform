@@ -1,0 +1,17 @@
+export const deliveryDays = [
+  { value: 1, label: '1 день' },
+  { value: 2, label: '2 дня' },
+  { value: 3, label: '3 дня' },
+  { value: 4, label: '4 дня' },
+  { value: 5, label: '5 дней' },
+  { value: 6, label: '6 дней' },
+  { value: 7, label: '7 дней' },
+  { value: 10, label: '10 дней' },
+  { value: 12, label: '12 дней' },
+  { value: 14, label: '14 дней' },
+  { value: 15, label: '15 дней' },
+  { value: 20, label: '20 дней' },
+  { value: 30, label: '30 дней' },
+  { value: 60, label: '60 дней' },
+  { value: 90, label: '90 дней' },
+];

@@ -1,0 +1,134 @@
+# Услуги
+
+Эти маршруты можно использовать для получения и создания услуг.
+
+## Создание услуги
+
+`POST /services`
+
+Тело запроса
+
+```json
+{
+  "title": "Разработка сайта",
+  "description": "Создание адаптивных и мобильных версий сайта с использованием HTML, CSS и JavaScript.",
+  "category": "id категории",
+  "bannerImage": "url обложки",
+  "images": ["url изображения 1", "url изображения 2"],
+  "tags": ["id тэга 1", "id тэга 2"],
+  "features": [
+    {
+      "name": "Дизайн",
+      "includedIn": ["пакет 1", "пакет 2"]
+    },
+    {
+      "name": "Верстка",
+      "includedIn": ["пакет 1", "пакет 2"]
+    },
+    {
+      "name": "SEO оптимизация",
+      "includedIn": ["пакет 2"]
+    }
+  ],
+  "packages": [
+    {
+      "name": "пакет 1",
+      "price": 100,
+      "description": "описание пакета 1",
+      "deliveryDays": 5
+    },
+   {
+      "name": "пакет 2",
+      "price": 1000,
+      "description": "описание пакета 1",
+      "deliveryDays": 10
+    }
+  ]
+}
+```
+
+Ответ
+
+```json
+{
+  "slug": "разработка-сайта-jshfghiu"
+}
+```
+
+## Получение услуги с использованием его slug
+
+`GET /services/<slug>`
+
+Ответ
+
+```json
+{
+  "bannerImage": "bannerImage/sfsafgsdfg662617834869.jpg",
+  "category": {
+    "id": "sdfgsdfgsdf",
+    "name": "nodejs",
+    "createdAt": "2023-04-12T06:00:01.064Z",
+    "slug": "nodejs-esfgsdfg"
+  },
+  "createdAt": "2023-03-12T08:43:34.996Z",
+  "description": "<p>Здраствуйте! Я предоставляю уникальную услугу</p>",
+  "user": {
+    "username": "user123",
+    "profileCompleted": true,
+    "name": "Иван Иванович",
+    "avatarUrl": "images/csgdsdfga1.jpg",
+    "verified": false
+  },
+  "images": [
+    "serviceImages/sfgsdfgreceived_585478196808985.jpg",
+    "serviceImages/sfgsdfgTumblr_l_95355635828154.jpg",
+    "serviceImages/sfgsdfgVID_20220412_005634_324-1.mp4",
+    "serviceImages/sfgsdfgkzab7k3q6uma1.gif",
+    "serviceImages/sfgsdfgaz24O8R.jpg",
+    "serviceImages/sfgsdfgZr92F7I.jpg",
+    "serviceImages/sfgsdfgMYMGKhp.jpg",
+    "serviceImages/sfgsdfgRYE9XsC.jpg"
+  ],
+  "id": "sgsdfgdsf",
+  "package": [],
+  "slug": "я-сделаю-ваш-сайт-лучше-sdfgsdfg",
+  "title": "я сделаю ваш сайт лучше",
+  "tags": []
+}
+```
+
+## Получение услуг с использованием имени пользователя
+
+`GET /services/user/:username`
+
+Параметры запроса
+
+- `take` - количество услуг для извлечения (необязательно, по умолчанию равно 10)
+
+Ответ
+
+```json
+{
+  "services": [
+  ],
+  "next": 21
+}
+```
+
+## Получение всех услуг
+
+`GET /services`
+
+Параметры запроса
+
+- `take` - количество услуг для извлечения (необязательно, по умолчанию равно 10)
+
+Ответ
+
+```json
+{
+  "services": [
+  ],
+  "next": 21
+}
+```

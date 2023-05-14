@@ -1,0 +1,71 @@
+import { Callout } from "nextra-theme-docs";
+
+# Профиль
+
+Вы узнаете как получать профиль прользователя и обновлять его.
+
+## Получить профиль аутентифицированного пользователя
+
+`GET /profile`
+
+<Callout type="warning">
+    <strong>Предупреждение:</strong> Необходимо указать заголовок авторизации
+</Callout>
+
+```json
+{
+  "id": "sfsfgsfgs",
+  "name": "Иван Иванов",
+  "username": "user123",
+  "profileCompleted": true,
+  "role": "Freelancer",
+  "avatarUrl": "images/asfgsdfgsdf.jpg",
+  "bio": "Моя невероятная биография",
+  "country": "Россия"
+}
+```
+
+## Обновить профиль аутентифицированного пользователя
+
+`POST /profile/update`
+
+<Callout type="warning">
+    <strong>Предупреждение:</strong> Необходимо указать заголовок авторизации
+</Callout>
+
+Тело запроса
+
+- `name` - имя пользователя (необязательно)
+- `avatarUrl` - URL изображения аватара, предоставленного маршрутами загрузки (необязательно)
+- `country` - страна пользователя (необязательно)
+- `bio` - Биография пользователя (необязательно)
+
+Ответ
+
+```json
+{
+  "updated": true
+}
+```
+
+## Получить профиль по имени пользователя
+
+`GET /profile/:username`
+
+Ответ
+
+```json
+{
+  "id": "sfsfgsfgs",
+  "name": "Иван Иванов",
+  "username": "user123",
+  "profileCompleted": true,
+  "role": "Freelancer",
+  "avatarUrl": "images/asfgsdfgsdf.jpg",
+  "bio": "Моя невероятная биография",
+  "country": "Россия",
+  "verified": false,
+  "createdAt": "2023-03-11T13:00:01.001Z"
+}
+```
+

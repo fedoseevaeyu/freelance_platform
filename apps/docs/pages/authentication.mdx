@@ -1,0 +1,55 @@
+# Авторизация
+
+На этой странице находится информация по аутентификаций с помощью API Freelance Platform.
+
+## Логин
+
+Маршрут входа в систему находится по адресу `/auth/sign-in`. Он принимает POST-запрос со следующими параметрами:
+
+- `email` - Адрес электронной почты пользователя
+- `password` - Пароль пользователя
+
+Ответ
+
+```json
+{
+  "user": {
+    "role": "Freelancer",
+    "username": "user123",
+    "id": "asdfsdfgiu58t4t",
+    "name": "Иван Иванович",
+    "profileCompleted": true
+  },
+  "token": "asgfsdfgsdfgsdfg.asdfasdf.sagsdfgsdfg"
+}
+```
+
+Токен будет использоваться для дальнейших запросов к API.
+
+## Регистрация
+
+Маршрут регистрации находится по адресу `/auth/register`. Он принимает POST-запрос со следующими параметрами:
+
+- `email` - Адрес электронной почты пользователя
+- `password` - Пароль пользователя
+- `confirmPassword` - Пароль пользователя
+- `country` - Страна пользователя
+- `role` - Роль пользователя (`Freelancer` или `Client`)
+- `name` - Имя пользователя
+
+Ответ:
+
+```json
+{
+  "user": {
+    "role": "Freelancer",
+    "username": "user123",
+    "id": "asdfsdfgiu58t4t",
+    "name": "Иван Иванович",
+    "profileCompleted": false
+  },
+  "token": "asgfsdfgsdfgsdfg.asdfasdf.sagsdfgsdfg"
+}
+```
+
+Токен будет использоваться для дальнейших запросов к API.

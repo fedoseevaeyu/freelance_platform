@@ -1,0 +1,58 @@
+html,
+body {
+  scroll-behavior: smooth !important;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Typography */
+
+h1 {
+  @apply text-4xl font-extrabold leading-tight tracking-tighter;
+}
+
+h2 {
+  @apply text-3xl font-extrabold leading-tight tracking-tighter;
+}
+
+h3 {
+  @apply text-3xl font-bold leading-tight;
+}
+
+h4 {
+  @apply text-2xl font-bold leading-snug tracking-tight;
+}
+
+@screen md {
+  h1 {
+    @apply text-5xl;
+  }
+
+  h2 {
+    @apply text-4xl;
+  }
+}
+
+/* Buttons */
+
+.btn,
+.btn-sm {
+  @apply font-medium inline-flex items-center justify-center border border-transparent rounded leading-snug transition duration-150 ease-in-out;
+}
+
+.btn {
+  @apply px-8 py-3 shadow-lg;
+}
+
+.btn-sm {
+  @apply px-4 py-2 shadow;
+}
+
+
+.glass {
+  @apply shadow-[0_4px_30px_rgba(0,0,0,0.1)] backdrop-blur-[11.6px] border rounded-2xl border-solid border-[rgba(255,255,255,0.44)];
+  background: rgba(255, 255, 255, 0.31);
+  -webkit-backdrop-filter: blur(11.6px);
+}
