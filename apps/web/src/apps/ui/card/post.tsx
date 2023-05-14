@@ -63,8 +63,8 @@ export function PostCard({
           <Text weight={500} lineClamp={1} className="break-all">
             {title}
           </Text>
-          {badgeLabel ? <Badge variant="light">{badgeLabel}</Badge> : null}
         </div>
+        {badgeLabel ? <Badge variant="light">{badgeLabel}</Badge> : null}
 
         {tags ? (
           <div className="flex w-full flex-wrap gap-[4px]">

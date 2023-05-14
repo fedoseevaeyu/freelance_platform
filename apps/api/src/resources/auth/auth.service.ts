@@ -1,11 +1,11 @@
-import {HttpException, Injectable} from '@nestjs/common';
-import {User} from '@prisma/client';
-import {compare, hash} from 'bcrypt';
-import {sign, verify} from 'jsonwebtoken';
-import {SIGN_SECRET} from 'src/constants';
-import {PrismaService} from 'src/services/prisma/prisma.service';
-import {CreateUserDto} from './dto/create-auth.dto';
-import {LoginUserDto} from './dto/login.dto';
+import { HttpException, Injectable } from '@nestjs/common';
+import { User } from '@prisma/client';
+import { compare, hash } from 'bcrypt';
+import { sign, verify } from 'jsonwebtoken';
+import { SIGN_SECRET } from 'src/constants';
+import { PrismaService } from 'src/services/prisma/prisma.service';
+import { CreateUserDto } from './dto/create-auth.dto';
+import { LoginUserDto } from './dto/login.dto';
 
 type UserPayload = Pick<User, 'id' | 'role'>;
 
@@ -38,7 +38,10 @@ export class AuthService {
       },
     });
     if (oldUser)
-      throw new HttpException('Адрес электронной почты или имя пользователя, которое уже используется.', 409);
+      throw new HttpException(
+        'Адрес электронной почты или имя пользователя, которое уже используется.',
+        409,
+      );
     if (password !== confirmPassword)
       throw new HttpException('Пароли не совпадают.', 400);
     const user = await this.p.user.create({
@@ -87,7 +90,10 @@ export class AuthService {
       },
     });
     if (!user)
-      throw new HttpException('Пользователь с указанным адресом электронной почты не найден', 404);
+      throw new HttpException(
+        'Пользователь с указанным адресом электронной почты не найден',
+        404,
+      );
     const isPasswordSame = await compare(password, user.password);
     if (isPasswordSame === false)
       throw new HttpException('Неверный пароль', 401);
@@ -113,7 +119,7 @@ export class AuthService {
     try {
       const payload = verify(token, SIGN_SECRET) as UserPayload;
       return await this.p.user.findFirstOrThrow({
-        where: {id: payload.id},
+        where: { id: payload.id },
       });
     } catch {
       throw Error('Unauthorized');

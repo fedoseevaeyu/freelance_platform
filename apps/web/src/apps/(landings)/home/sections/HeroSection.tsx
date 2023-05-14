@@ -9,7 +9,7 @@ function HeroSection() {
   return (
     <section className="relative">
       <div
-        className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2"
+        className="pointer-events-none absolute bottom-0 left-1/2 z-[-1] -translate-x-1/2"
         aria-hidden
       >
         <svg width="1360" height="578" viewBox="0 0 1360 578">
@@ -34,17 +34,16 @@ function HeroSection() {
       </div>
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="pb-12 pt-32 md:pb-20 md:pt-40">
+        <div className="pb-12 pt-16 md:pb-20 md:pt-20">
           <div className="pb-12 text-center md:pb-16">
             <h1
               className="mb-4 text-5xl font-extrabold leading-tighter tracking-tighter md:text-6xl"
               data-aos="zoom-y-out"
             >
-              Создайте свой{' '}
+              Зарабатывайте и выполняйте свои задачи{' '}
               <span className="bg-gradient-to-r from-blue-500 to-teal-400 bg-clip-text text-transparent">
-                бизнес
-              </span>{' '}
-              вместе с нами
+                вместе с нами
+              </span>
             </h1>
             <div className="mx-auto max-w-3xl">
               <p

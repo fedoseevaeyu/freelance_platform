@@ -22,4 +22,3 @@ if (!SUPABASE_URL) {
 if (!SUPABASE_KEY) {
   throw new Error('SUPABASE_KEY must be defined');
 }
-

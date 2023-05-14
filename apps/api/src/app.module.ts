@@ -17,7 +17,7 @@ import { ServicesModule } from './resources/services/services.module';
 import { AuthService } from './resources/auth/auth.service';
 import { UserMiddleware } from './resources/auth/middleware/auth/auth.middleware';
 import { JobPostModule } from './resources/job-post/job-post.module';
-import {PostsModule} from "./resources/posts/posts.module";
+import { PostsModule } from './resources/posts/posts.module';
 
 @Module({
   providers: [
@@ -38,7 +38,7 @@ import {PostsModule} from "./resources/posts/posts.module";
     TagsModule,
     ServicesModule,
     JobPostModule,
-      PostsModule
+    PostsModule,
   ],
   exports: [PrismaService],
 })
@@ -64,8 +64,8 @@ export class AppModule implements NestModule {
           method: RequestMethod.GET,
           path: 'profile/:username',
         },
-          'posts/(.*)',
-          'posts',
+        'posts/(.*)',
+        'posts',
         'services/:slug',
         'services/user/:username',
         {

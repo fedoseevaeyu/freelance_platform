@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client-py"
+  recursive_type_depth = 5
 }
 
 datasource db {
@@ -18,7 +19,7 @@ model User {
   password         String
   name             String
   username         String  @unique
-  country          String  @default("Russia")
+  country          String  @default("Россия")
   verified         Boolean @default(false)
   role             Role
   emailVerified    Boolean @default(false)

@@ -6,10 +6,7 @@ export const stringToSlug = (title: string, nanoIdLength?: number) => {
   slug = title.toLowerCase();
 
   // remove special characters
-  slug = slug.replace(
-    /[`~!@#|$%^&*()+=,.\/?><'":;_]/gi,
-    '',
-  );
+  slug = slug.replace(/[`~!@#|$%^&*()+=,.\/?><'":;_]/gi, '');
   // The /gi modifier is used to do a case-insensitive search of all occurrences of a regular expression in a string
 
   // replace spaces with dash symbols

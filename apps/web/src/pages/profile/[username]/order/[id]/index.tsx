@@ -71,8 +71,8 @@ const OrderPage = () => {
       })}
     >
       <MetaTags
-          title="Детали заказа"
-          description="Проверьте детали вашего заказа здесь"
+        title="Детали заказа"
+        description="Проверьте детали вашего заказа здесь"
       />
 
       <div className="flex h-full w-full flex-col items-center justify-center">

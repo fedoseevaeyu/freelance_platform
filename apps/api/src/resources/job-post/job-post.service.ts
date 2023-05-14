@@ -1,11 +1,15 @@
-import {HttpException, Injectable} from '@nestjs/common';
-import {stringToSlug} from 'src/helpers/slug';
-import {PrismaService} from 'src/services/prisma/prisma.service';
-import {CreateJobPostDTO} from './dto/create.dto';
+import { HttpException, Injectable } from '@nestjs/common';
+import { stringToSlug } from 'src/helpers/slug';
+import { PrismaService } from 'src/services/prisma/prisma.service';
+import { CreateJobPostDTO } from './dto/create.dto';
+import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class JobPostService {
-  constructor(protected p: PrismaService) {}
+  constructor(
+    protected p: PrismaService,
+    private readonly httpService: HttpService,
+  ) {}
 
   async createJobPost(data: CreateJobPostDTO, userId: string) {
     const { category, deadline, description, images, price, tags, title } =
@@ -16,14 +20,18 @@ export class JobPostService {
         id: category,
       },
     });
-    if (!c) throw new HttpException('Категория с указанным идентификатором не найдена.', 404);
+    if (!c)
+      throw new HttpException(
+        'Категория с указанным идентификатором не найдена.',
+        404,
+      );
     return await this.p.jobPost.create({
       data: {
         description,
         slug: stringToSlug(title, 10),
         title,
         user: {
-          connect: {id: userId},
+          connect: { id: userId },
         },
         category: {
           connect: {
@@ -31,7 +39,7 @@ export class JobPostService {
           },
         },
         tags: {
-          connect: tags.map((tag) => ({id: tag})),
+          connect: tags.map((tag) => ({ id: tag })),
         },
         images,
         deadline,
@@ -39,8 +47,17 @@ export class JobPostService {
       },
       select: {
         slug: true,
-        category: true
+        category: true,
       },
+    }).then((e) => {
+      try {
+        this.httpService.axiosRef
+            .post(`http://0.0.0.0:5001/recommendations/clear-cache`);
+      } catch(e) {
+        console.log(e)
+      }
+
+      return e;
     });
   }
   async getJobPost(slug: string) {
@@ -92,7 +109,32 @@ export class JobPostService {
     });
     if (!post)
       throw new HttpException('Поста с предоставленным slug не найдено.', 404);
-    return post;
+
+    let recommendServices = [];
+    try {
+      const recommendIds = await this.httpService.axiosRef
+        .get(`http://0.0.0.0:5001/recommendations/job_post/${post.id}`)
+        .then((e) => e.data);
+      recommendServices = await this.p.service.findMany({
+        where: {
+          id: {
+            in: recommendIds,
+          },
+        },
+        include: {
+          category: true,
+          tags: true,
+        },
+        orderBy: { createdAt: 'desc' },
+      });
+    } catch (err) {
+      console.log(err);
+    }
+
+    return {
+      ...post,
+      recommendServices,
+    };
   }
   async getJobPostsByUsername(username: string, take?: string) {
     const toTake = Number.isNaN(Number(take)) ? 10 : Number(take);
@@ -144,7 +186,8 @@ export class JobPostService {
         },
       ],
     });
-    if (!posts) throw new HttpException('Посты для этого пользователя не найдены.', 404);
+    if (!posts)
+      throw new HttpException('Посты для этого пользователя не найдены.', 404);
     if (posts.length === 10) {
       return {
         posts,

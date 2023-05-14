@@ -8,7 +8,7 @@ CREATE TABLE "User" (
     "password" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "username" TEXT NOT NULL,
-    "country" TEXT NOT NULL DEFAULT 'Россия',
+    "country" TEXT NOT NULL DEFAULT 'Russia',
     "verified" BOOLEAN NOT NULL DEFAULT false,
     "role" "Role" NOT NULL,
     "emailVerified" BOOLEAN NOT NULL DEFAULT false,

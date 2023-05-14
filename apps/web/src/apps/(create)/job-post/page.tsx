@@ -366,7 +366,7 @@ function CreateJobPostPageContent() {
                             }
                           )}
                         >
-                          Прикреплять файлы
+                          Прикрепить файлы
                         </Button>
                       )}
                     </FileButton>

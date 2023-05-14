@@ -180,7 +180,7 @@ export const countries = [
   'Qatar',
   'Reunion',
   'Romania',
-  'Россия',
+  'Russia',
   'Rwanda',
   'Saint Helena',
   'Saint Kitts and Nevis',

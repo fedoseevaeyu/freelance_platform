@@ -29,7 +29,6 @@ import type {
 } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import Script from 'next/script';
 import { useRef } from 'react';
 import { Carousel } from 'react-responsive-carousel';
 
@@ -37,6 +36,7 @@ import { Service } from '~/types/service';
 
 import { routes } from '../../../apps/config/routes';
 import { siteName } from '../../../apps/data/site';
+import { PostCard } from '../../../apps/ui/card/post';
 import { MetaTags } from '../../../apps/ui/meta-tags';
 import { readCookie } from '../../../apps/utils/cookie';
 import { notifyAboutError } from '../../../apps/utils/error';
@@ -183,6 +183,7 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
 
         <TypographyStylesProvider>
           <div
+            className="prose max-w-full break-all "
             dangerouslySetInnerHTML={sanitize(props.description, undefined)}
           />
         </TypographyStylesProvider>
@@ -341,10 +342,32 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
           ) : null}
         </tbody>
       </Table>
-      <Script
-        src={'https://checkout.razorpay.com/v1/checkout.js'}
-        strategy="lazyOnload"
-      />
+
+      {props.recommendJobs.length > 0 && (
+        <>
+          <Text
+            className={clsx('my-4 text-center text-2xl font-bold', {
+              [inter.className]: true,
+            })}
+          >
+            Предложенные заказы
+          </Text>
+          <div className="grid gap-[12px] md:grid-cols-3">
+            {props.recommendJobs.map((post) => (
+              <PostCard
+                {...post}
+                type="job"
+                badgeLabel={post.category.name}
+                tags={post.tags
+                  .map((e: any) => e.name)
+                  .sort((a: any, b: any) => a.length - b.length)}
+                key={post.slug}
+                image={post.bannerImage}
+              />
+            ))}
+          </div>
+        </>
+      )}
     </Container>
   );
 };
@@ -364,7 +387,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps<Service> = async ({ params }) => {
+export const getStaticProps: GetStaticProps<
+  Service & { recommendJobs: any[] }
+> = async ({ params }) => {
   const { slug } = params!;
 
   const data = await fetch(URLBuilder(`/services/${slug}`));

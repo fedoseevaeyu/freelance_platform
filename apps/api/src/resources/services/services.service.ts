@@ -1,11 +1,15 @@
-import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
-import {stringToSlug} from 'src/helpers/slug';
-import {PrismaService} from 'src/services/prisma/prisma.service';
-import {CreateServiceDTO} from './dto/create-service.dto';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
+import { stringToSlug } from 'src/helpers/slug';
+import { PrismaService } from 'src/services/prisma/prisma.service';
+import { CreateServiceDTO } from './dto/create-service.dto';
 
 @Injectable()
 export class ServicesService {
-  constructor(protected p: PrismaService) {}
+  constructor(
+    protected p: PrismaService,
+    private readonly httpService: HttpService,
+  ) {}
 
   async createService(data: CreateServiceDTO, id: string) {
     const {
@@ -32,9 +36,9 @@ export class ServicesService {
         description,
         images,
         tags: {
-          connect: tags.map((t) => ({id: t})),
+          connect: tags.map((t) => ({ id: t })),
         },
-        user: {connect: {id}},
+        user: { connect: { id } },
         package: {
           create: packages.map((p) => ({
             features: {
@@ -51,6 +55,15 @@ export class ServicesService {
         slug: true,
         category: true,
       },
+    }).then((e) => {
+      try {
+        this.httpService.axiosRef
+            .post(`http://0.0.0.0:5001/recommendations/clear-cache`);
+      } catch(e) {
+        console.log(e)
+      }
+
+      return e;
     });
   }
 
@@ -114,7 +127,32 @@ export class ServicesService {
     });
     if (!service)
       throw new HttpException('Услуга не найдена', HttpStatus.NOT_FOUND);
-    return service;
+
+    let recommendJobs = [];
+    try {
+      const recommendIds = await this.httpService.axiosRef
+        .get(`http://0.0.0.0:5001/recommendations/service/${service.id}`)
+        .then((e) => e.data);
+      recommendJobs = await this.p.jobPost.findMany({
+        where: {
+          id: {
+            in: recommendIds,
+          },
+        },
+        include: {
+          category: true,
+          tags: true,
+        },
+        orderBy: { createdAt: 'desc' },
+      });
+    } catch (err) {
+      console.log(err);
+    }
+
+    return {
+      ...service,
+      recommendJobs,
+    };
   }
   async getServices(username: string, take?: string) {
     const toTake = Number.isNaN(parseInt(take)) ? 10 : parseInt(take);

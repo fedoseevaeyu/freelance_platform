@@ -134,7 +134,7 @@ export class CategoriesService {
         next: toTake + 10,
       };
     }
-    return { posts: data   };
+    return { posts: data };
   }
   async getCategoryStats(slug: string) {
     const category = await this.p.category.findFirst({

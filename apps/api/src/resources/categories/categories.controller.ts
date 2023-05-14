@@ -4,7 +4,8 @@ import {
   Get,
   HttpException,
   Param,
-  Post, Query,
+  Post,
+  Query,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 
@@ -31,7 +32,10 @@ export class CategoriesController {
     return await this.categoriesService.fetchUsingId(slug, 'Job', take);
   }
   @Get(':slug/services')
-  async fetchServicesByCategory(@Param('slug') slug: string, @Query('take') take) {
+  async fetchServicesByCategory(
+    @Param('slug') slug: string,
+    @Query('take') take,
+  ) {
     return await this.categoriesService.fetchUsingId(slug, 'Service', take);
   }
 }

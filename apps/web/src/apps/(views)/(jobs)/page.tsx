@@ -1,6 +1,5 @@
 import { Container } from '@components/container';
 import { inter } from '@fonts';
-import { useUser } from '@hooks/user';
 import { Avatar, Badge, Divider, Image, Text, Tooltip } from '@mantine/core';
 import { IconCheck } from '@tabler/icons-react';
 import clsx from 'clsx';
@@ -8,11 +7,11 @@ import Link from 'next/link';
 import { Carousel } from 'react-responsive-carousel';
 
 import { routes } from '../../config/routes';
+import { PostCard } from '../../ui/card/post';
 import { profileImageRouteGenerator } from '../../utils/profile';
 import { assetURLBuilder } from '../../utils/url';
 
 export default function JobPostPageContent(props: any) {
-  const { username } = useUser();
   return (
     <Container
       className={clsx('container', {
@@ -121,7 +120,7 @@ export default function JobPostPageContent(props: any) {
                     {i.endsWith('.mp4') ? (
                       <video
                         src={assetURLBuilder(i)}
-                        className="my-6 cursor-pointer max-h-[512px]"
+                        className="my-6 max-h-[512px] cursor-pointer"
                         controls
                         onClick={() => {
                           window.open(assetURLBuilder(i));
@@ -132,7 +131,7 @@ export default function JobPostPageContent(props: any) {
                         src={assetURLBuilder(i)}
                         alt="Image"
                         height={512}
-                        className="cursor-pointer max-h-[512px]"
+                        className="max-h-[512px] cursor-pointer"
                         onClick={() => {
                           window.open(assetURLBuilder(i));
                         }}
@@ -145,11 +144,29 @@ export default function JobPostPageContent(props: any) {
           </>
         )}
 
-        {props.user.username === username && (
+        {props.recommendServices.length > 0 && (
           <>
             <Divider orientation="horizontal" className={clsx('my-4 w-full')} />
-            <div>
-              <h2 className="text-base font-semibold">Предложенные услуги</h2>
+            <Text
+              className={clsx('my-4 text-center text-2xl font-bold', {
+                [inter.className]: true,
+              })}
+            >
+              Предложенные услуги
+            </Text>
+            <div className="grid gap-[12px] md:grid-cols-3">
+              {props.recommendServices.map((post: any) => (
+                <PostCard
+                  {...post}
+                  type="service"
+                  badgeLabel={post.category.name}
+                  tags={post.tags
+                    .map((e: any) => e.name)
+                    .sort((a: any, b: any) => a.length - b.length)}
+                  key={post.slug}
+                  image={post.bannerImage}
+                />
+              ))}
             </div>
           </>
         )}

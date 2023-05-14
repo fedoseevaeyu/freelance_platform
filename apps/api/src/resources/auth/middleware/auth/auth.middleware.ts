@@ -1,7 +1,12 @@
-import {HttpException, HttpStatus, Injectable, NestMiddleware,} from '@nestjs/common';
-import {User} from '@prisma/client';
-import {NextFunction, Request, Response} from 'express';
-import {AuthService} from 'src/resources/auth/auth.service';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NestMiddleware,
+} from '@nestjs/common';
+import { User } from '@prisma/client';
+import { NextFunction, Request, Response } from 'express';
+import { AuthService } from 'src/resources/auth/auth.service';
 
 @Injectable()
 export class UserMiddleware implements NestMiddleware {
@@ -10,8 +15,8 @@ export class UserMiddleware implements NestMiddleware {
     const token = req.headers.authorization?.replace('Bearer ', '');
     if (!token) {
       throw new HttpException(
-          'Отсутствующий или просроченный токен',
-          HttpStatus.UNAUTHORIZED,
+        'Отсутствующий или просроченный токен',
+        HttpStatus.UNAUTHORIZED,
       );
     }
     try {

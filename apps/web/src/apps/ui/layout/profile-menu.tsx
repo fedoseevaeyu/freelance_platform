@@ -4,8 +4,6 @@ import {
   IconLogout,
   IconMoneybag,
   IconSearch,
-  IconSettings2,
-  IconShoppingCart,
   IconUserCircle,
 } from '@tabler/icons-react';
 import { useRouter } from 'next/router';
@@ -73,14 +71,14 @@ export default function HeaderMenu() {
               ) : null}
             </>
           )}
-            <Menu.Item
-            onClick={() => {
-              push(`/profile/${username}/orders`);
-            }}
-            icon={<IconShoppingCart size={20} />}
-          >
-            Заказы
-          </Menu.Item>
+          {/*  <Menu.Item */}
+          {/*  onClick={() => { */}
+          {/*    push(`/profile/${username}/orders`); */}
+          {/*  }} */}
+          {/*  icon={<IconShoppingCart size={20} />} */}
+          {/* > */}
+          {/*  Заказы */}
+          {/* </Menu.Item> */}
           <Menu.Divider />
           <Menu.Item
             color="red"

@@ -10,8 +10,6 @@ export default function HomePageContent() {
       <HeroSection />
       <FeaturesSection />
       <FeaturesBlocksSection />
-      <Testimonials />
-      <Newsletter />
     </>
   );
 }

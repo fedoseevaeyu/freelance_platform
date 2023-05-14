@@ -9,7 +9,7 @@ export const validateEmail = (email: string | null) => {
   return null;
 };
 export const validatePassword = (password: string) =>
-  password.length <= 8 ? 'Пароль должен быть не меньше 8 символов' : null;
+  password.length < 8 ? 'Пароль должен быть не меньше 8 символов' : null;
 export const validateTitle = (title: string) => {
   if (title.length < 20) {
     return 'Заголовок должен содержать не менее 20 символов';
