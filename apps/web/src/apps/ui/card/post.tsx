@@ -46,7 +46,13 @@ export function PostCard({
       {image && (
         <Card.Section>
           <Image
-            src={resolveImageUrl ? assetURLBuilder(image) : image}
+            src={
+              image.includes('fallback')
+                ? '/images/fallback.webp'
+                : resolveImageUrl
+                ? assetURLBuilder(image)
+                : image
+            }
             height={160}
             alt="Обложка"
           />

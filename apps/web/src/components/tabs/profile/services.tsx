@@ -98,7 +98,8 @@ const ServicesTab = ({ username }: Props) => {
           {page.services?.map((service) => (
             <Paper key={service.id} withBorder shadow={'md'} radius="md">
               <Image
-                src={assetURLBuilder(service.bannerImage)}
+                src={service.bannerImage.includes('fallback')
+                    ? '/images/fallback.webp' : assetURLBuilder(service.bannerImage)}
                 width="100%"
                 height={'100%'}
                 alt="Service Banner"
@@ -156,16 +157,7 @@ const ServicesTab = ({ username }: Props) => {
               </Group>
               <Divider />
               <Group position="apart" pt="md" pb={undefined}>
-                <div className="flex flex-row pl-4">
-                  <IconStar color="yellow" fill="yellow" width={15} />
-                  <span className="ml-1">
-                    {service.rating}
-                    <span className="ml-1 text-sm text-gray-500">
-                      ({service.ratedBy})
-                    </span>
-                  </span>
-                </div>
-                <div className="flex flex-col pr-4">
+                <div className="flex flex-col px-4 pb-2">
                   <Text
                     className={clsx(
                       inter.className,

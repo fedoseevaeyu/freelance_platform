@@ -86,9 +86,10 @@ function CreateServicePageContent() {
     },
   });
   const [features, setFeatures] = useState<
-    { name: string; includedIn: string[] }[]
+    { id: number; name: string; includedIn: string[] }[]
   >([
     {
+      id: 0,
       name: '',
       includedIn: [],
     },
@@ -450,6 +451,7 @@ function CreateServicePageContent() {
                               features.map((f, index) =>
                                 index === id
                                   ? {
+                                      id: f.id,
                                       name: e.target.value,
                                       includedIn: f.includedIn,
                                     }
@@ -463,7 +465,9 @@ function CreateServicePageContent() {
                           variant="filled"
                           className="bg-[#e53935] hover:bg-[#d32f2f]"
                           onClick={() => {
-                            formState.removeListItem('features', id);
+                            setFeatures(
+                              features.filter((f, index) => index !== id)
+                            );
                           }}
                         >
                           <IconX />
@@ -487,7 +491,7 @@ function CreateServicePageContent() {
                       onClick={() => {
                         setFeatures((f) => [
                           ...f,
-                          { name: '', includedIn: [] },
+                          { id: features.length, name: '', includedIn: [] },
                         ]);
                       }}
                     >
@@ -498,7 +502,7 @@ function CreateServicePageContent() {
                         if (features.length === 0) {
                           showNotification({
                             color: 'red',
-                            message: 'You must add at least one feature',
+                            message: 'Вы должны добавить хотя бы 1 особенность',
                           });
                         }
                         setActive(2);
@@ -723,6 +727,7 @@ function CreateServicePageContent() {
                               className="cursor-pointer rounded-md"
                               src={URL.createObjectURL(bannerImage)}
                               onClick={props.onClick}
+                              placeholder="/images/fallback.webp"
                               classNames={{
                                 image: 'object-cover max-h-[512px] rounded-md',
                               }}

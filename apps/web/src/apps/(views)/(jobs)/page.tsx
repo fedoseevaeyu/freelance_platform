@@ -1,9 +1,19 @@
 import { Container } from '@components/container';
 import { inter } from '@fonts';
-import { Avatar, Badge, Divider, Image, Text, Tooltip } from '@mantine/core';
+import { useUser } from '@hooks/user';
+import {
+  Avatar,
+  Badge,
+  Button,
+  Divider,
+  Image,
+  Text,
+  Tooltip,
+} from '@mantine/core';
 import { IconCheck } from '@tabler/icons-react';
 import clsx from 'clsx';
 import Link from 'next/link';
+import { useState } from 'react';
 import { Carousel } from 'react-responsive-carousel';
 
 import { routes } from '../../config/routes';
@@ -12,6 +22,8 @@ import { profileImageRouteGenerator } from '../../utils/profile';
 import { assetURLBuilder } from '../../utils/url';
 
 export default function JobPostPageContent(props: any) {
+  const [send, setSend] = useState(false);
+  const { userType, username } = useUser();
   return (
     <Container
       className={clsx('container', {
@@ -20,25 +32,42 @@ export default function JobPostPageContent(props: any) {
       mb="xl"
     >
       <div className="flex flex-col items-center justify-center ">
-        <h1 className="break-all text-3xl font-bold">{props.title}</h1>
+        <div className="flex items-center justify-between gap-6">
+          <h1 className="break-all text-3xl font-bold">{props.title}</h1>
+          {username !== props.user.username && !send && (
+            <Button
+              variant="filled"
+              className="bg-black text-white"
+              onClick={() => setSend(true)}
+            >
+              Сотрудничать
+            </Button>
+          )}
+        </div>
         {props.budget && (
           <Tooltip label={`Бюджет этого заказа составляет ${props.budget}`}>
             <Badge variant="light" className="mt-2">
-              {props.budget}
+              бюджет: {props.budget} руб.
             </Badge>
           </Tooltip>
         )}
-        {/* {props.claimed ? (
-          <div className="mt-2">
-            <Tooltip label={`This Post is claimed by ${props.claimedBy.name}`}>
-              <Badge color="green">Claimed</Badge>
-            </Tooltip>
-          </div>
-        ) : null} */}
+        {props.deadline && (
+          <Tooltip
+            label={`Необходимо выполнить этот проект до ${new Date(
+              props.deadline
+            ).toLocaleDateString()}`}
+          >
+            <Badge variant="light" className="mt-2">
+              дедлайн: {new Date(props.deadline).toLocaleDateString()}
+            </Badge>
+          </Tooltip>
+        )}
         <div className="mt-2 flex flex-row flex-wrap items-center justify-center">
           <Avatar
             src={
-              props.user.avatarUrl
+              props.user.avatarUrl &&
+              !props.user.avatarUrl.includes('fallback') &&
+              !props.user.avatarUrl.includes('cloudflare-ipfs')
                 ? assetURLBuilder(props.user.avatarUrl)
                 : profileImageRouteGenerator(props.user.username)
             }
@@ -46,36 +75,49 @@ export default function JobPostPageContent(props: any) {
             radius="xl"
           />
           <div className="ml-2 flex flex-col">
-            <h2 className="text-base font-semibold">
-              {props.user.name}
-              {props.user.verified && (
-                <Tooltip label="Подтвержденный пользователь" withArrow>
-                  <Badge
-                    color="green"
-                    variant="light"
-                    className="ml-2 rounded-full"
-                  >
-                    <div className="flex flex-row flex-nowrap items-center justify-center">
-                      <IconCheck color="green" size={15} />
-                    </div>
-                  </Badge>
-                </Tooltip>
-              )}
-            </h2>
             <Text
               color={'dimmed'}
-              className={clsx({
+              className={clsx('flex items-center justify-center gap-6', {
                 [inter.className]: true,
               })}
             >
-              <Link
-                href={routes.profile(props.user.username)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="leading-3 text-blue-500  hover:underline"
-              >
-                @{props.user.username}
-              </Link>
+              <div className="flex flex-col gap-2">
+                <h2 className="text-base font-semibold">
+                  {props.user.name}
+                  {props.user.verified && (
+                    <Tooltip label="Подтвержденный пользователь" withArrow>
+                      <Badge
+                        color="green"
+                        variant="light"
+                        className="ml-2 rounded-full"
+                      >
+                        <div className="flex flex-row flex-nowrap items-center justify-center">
+                          <IconCheck color="green" size={15} />
+                        </div>
+                      </Badge>
+                    </Tooltip>
+                  )}
+                </h2>
+                <Link
+                  href={routes.profile(props.user.username)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="leading-3 text-blue-500  hover:underline"
+                >
+                  @{props.user.username}
+                </Link>
+              </div>
+
+              {send && (
+                <div className="ml-24 flex flex-col">
+                  <Tooltip label={`Вы предложили сотрудничество`}>
+                    <Badge className="w-fit" color="green">
+                      Предложено
+                    </Badge>
+                  </Tooltip>
+                  <span>{props.user.email}</span>
+                </div>
+              )}
             </Text>
           </div>
         </div>
@@ -128,7 +170,11 @@ export default function JobPostPageContent(props: any) {
                       />
                     ) : (
                       <Image
-                        src={assetURLBuilder(i)}
+                        src={
+                          i.includes('fallback')
+                            ? '/images/fallback.webp'
+                            : assetURLBuilder(i)
+                        }
                         alt="Image"
                         height={512}
                         className="max-h-[512px] cursor-pointer"
@@ -144,7 +190,7 @@ export default function JobPostPageContent(props: any) {
           </>
         )}
 
-        {props.recommendServices.length > 0 && (
+        {userType !== 'Freelancer' && props.recommendServices.length > 0 && (
           <>
             <Divider orientation="horizontal" className={clsx('my-4 w-full')} />
             <Text
@@ -164,7 +210,11 @@ export default function JobPostPageContent(props: any) {
                     .map((e: any) => e.name)
                     .sort((a: any, b: any) => a.length - b.length)}
                   key={post.slug}
-                  image={post.bannerImage}
+                  image={
+                    post.bannerImage.includes('fallback')
+                      ? '/images/fallback.webp'
+                      : post.bannerImage
+                  }
                 />
               ))}
             </div>

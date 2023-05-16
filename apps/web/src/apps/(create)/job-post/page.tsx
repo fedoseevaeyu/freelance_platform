@@ -146,7 +146,7 @@ function CreateJobPostPageContent() {
               [inter.className]: true,
             })}
           >
-            Мы постараемся найти наиболее подходящих фрилансеров.
+            Мы постараемся найти наиболее подходящих разработчиков.
           </Text>
         </div>
         <div className={clsx('flex flex-col')}>

@@ -92,8 +92,7 @@ export function Footer() {
             title="Наши услуги"
             links={[
               { href: '#', title: 'Веб-разработка' },
-              { href: '#', title: 'Графический дизайн' },
-              { href: '#', title: 'Маркетинг и SEO' },
+              { href: '#', title: 'Мобильная-разработка' },
               { href: '#', title: 'Тарифы' },
             ]}
           />

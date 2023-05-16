@@ -147,7 +147,7 @@ export default function RegisterPageContent() {
                     setChecked('Freelancer');
                   }}
                 >
-                  Я фрилансер
+                  Я разработчик
                 </Paper>
               </div>
               <Button

@@ -7,6 +7,7 @@ import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import clsx from 'clsx';
 import type { Dispatch, SetStateAction } from 'react';
+import React from 'react';
 
 export default function Editor(props: {
   onSubmit: (d: string) => any;
@@ -61,6 +62,14 @@ export default function Editor(props: {
         </RichTextEditor.Toolbar>
 
         <RichTextEditor.Content />
+        <div
+          className={clsx('my-2 flex items-end justify-end pr-3 text-sm ', {
+            'text-red-500': (editor?.getText()?.length ?? 0) < 100,
+            'text-green-500': (editor?.getText()?.length ?? 0) >= 100,
+          })}
+        >
+          {editor?.getText()?.length ?? 0}
+        </div>
       </RichTextEditor>
       <Group position="center" className="mt-5">
         <Button

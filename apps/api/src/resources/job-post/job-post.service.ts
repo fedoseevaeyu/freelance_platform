@@ -69,6 +69,7 @@ export class JobPostService {
         user: {
           select: {
             name: true,
+            email: true,
             verified: true,
             avatarUrl: true,
             username: true,

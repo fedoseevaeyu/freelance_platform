@@ -90,6 +90,7 @@ export class ServicesService {
         user: {
           select: {
             username: true,
+            email: true,
             profileCompleted: true,
             name: true,
             avatarUrl: true,

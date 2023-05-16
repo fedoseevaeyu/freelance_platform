@@ -15,11 +15,9 @@ import {
   Tooltip,
   TypographyStylesProvider,
 } from '@mantine/core';
-import { useForm } from '@mantine/form';
 import { upperFirst } from '@mantine/hooks';
 import { openModal } from '@mantine/modals';
 import { IconCheck, IconX } from '@tabler/icons-react';
-import axios from 'axios';
 import clsx from 'clsx';
 import type {
   GetStaticPaths,
@@ -29,34 +27,90 @@ import type {
 } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useRef } from 'react';
+import { useState } from 'react';
 import { Carousel } from 'react-responsive-carousel';
 
-import { Service } from '~/types/service';
+import type { Service } from '~/types/service';
 
 import { routes } from '../../../apps/config/routes';
 import { siteName } from '../../../apps/data/site';
 import { PostCard } from '../../../apps/ui/card/post';
 import { MetaTags } from '../../../apps/ui/meta-tags';
-import { readCookie } from '../../../apps/utils/cookie';
-import { notifyAboutError } from '../../../apps/utils/error';
 import { profileImageRouteGenerator } from '../../../apps/utils/profile';
 import { assetURLBuilder, URLBuilder } from '../../../apps/utils/url';
 
-const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
+const Modal = ({ username, props, p }) => {
+  const [send, setSend] = useState(false);
+  const { push, asPath } = useRouter();
+
+  return (
+    <div
+      className={clsx('', {
+        [inter.className]: true,
+      })}
+    >
+      <Text>
+        {send
+          ? `Email для связи с ${props.user.name}`
+          : `Вы действительно хотите нанять ${props.user.name}?`}
+      </Text>
+      <Text>{send ? props.user.email : `Выбранный пакет услуг будет стоить ${p.price} рублей.`}</Text>
+      <div className="mt-2 flex flex-col gap-2">
+        <Button
+          disabled={send}
+          variant="default"
+          fullWidth
+          className="bg-green-500 text-white hover:bg-green-600"
+          onClick={() => {
+            if (!username)
+              push({
+                pathname: routes.auth.signIn,
+                query: {
+                  to: asPath,
+                },
+              });
+            else {
+              setSend(true);
+            }
+            // axios
+            //   .post<{
+            //     id: string;
+            //     amount: string;
+            //     discounted: boolean;
+            //   }>(
+            //     URLBuilder('/order/create'),
+            //     {
+            //       packageId: p.id,
+            //       sellerUsername: props.user.username,
+            //     },
+            //     {
+            //       headers: {
+            //         authorization: `Bearer ${readCookie(
+            //           'token'
+            //         )}`,
+            //       },
+            //     }
+            //   )
+            //   .then((d) => d.data)
+            //   .catch((err) => {
+            //     notifyAboutError(err);
+            //   });
+          }}
+        >
+          {send ? 'Предложено' : 'Предложить'}
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+const ServicePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
   props
 ) => {
-  const formState = useForm({
-    initialValues: {
-      couponCode: '',
-    },
-  });
   const { username } = useUser();
   useHydrateUserContext();
   useIssueNewAuthToken();
 
-  const { push, asPath } = useRouter();
-  const ref = useRef<HTMLInputElement>(null);
   return (
     <Container
       className={clsx('mb-10', {
@@ -69,7 +123,11 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
         ogImage={assetURLBuilder(props.bannerImage)}
       />
       <Image
-        src={assetURLBuilder(props.bannerImage)}
+        src={
+          props.bannerImage.includes('fallback')
+            ? '/images/fallback.webp'
+            : assetURLBuilder(props.bannerImage)
+        }
         alt="Banner Image"
         className="mb-4"
         classNames={{
@@ -81,7 +139,9 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
       <div className="mt-2 flex flex-row flex-wrap items-center justify-center">
         <Avatar
           src={
-            props.user.avatarUrl
+            props.user.avatarUrl &&
+            !props.user.avatarUrl.includes('fallback') &&
+            !props.user.avatarUrl.includes('cloudflare-ipfs')
               ? assetURLBuilder(props.user.avatarUrl)
               : profileImageRouteGenerator(props.user.username)
           }
@@ -265,62 +325,8 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                     disabled={username === props.user.username}
                     onClick={() => {
                       openModal({
-                        title: 'Подтверждение платежа',
                         children: (
-                          <div
-                            className={clsx('', {
-                              [inter.className]: true,
-                            })}
-                          >
-                            <Text>
-                              Вы действительно хотите нанять {props.user.name}?{' '}
-                            </Text>
-                            <Text>
-                              Выбранный пакет услуг будет стоить {p.price}{' '}
-                              рублей.
-                            </Text>
-                            <div className="mt-2 flex flex-col gap-2">
-                              <Button
-                                variant="default"
-                                fullWidth
-                                className="bg-green-500 text-white hover:bg-green-600"
-                                onClick={() => {
-                                  if (!username)
-                                    return push({
-                                      pathname: routes.auth.signIn,
-                                      query: {
-                                        to: asPath,
-                                      },
-                                    });
-                                  axios
-                                    .post<{
-                                      id: string;
-                                      amount: string;
-                                      discounted: boolean;
-                                    }>(
-                                      URLBuilder('/order/create'),
-                                      {
-                                        packageId: p.id,
-                                        sellerUsername: props.user.username,
-                                      },
-                                      {
-                                        headers: {
-                                          authorization: `Bearer ${readCookie(
-                                            'token'
-                                          )}`,
-                                        },
-                                      }
-                                    )
-                                    .then((d) => d.data)
-                                    .catch((err) => {
-                                      notifyAboutError(err);
-                                    });
-                                }}
-                              >
-                                Оплатить
-                              </Button>
-                            </div>
-                          </div>
+                          <Modal props={props} p={p} username={username} />
                         ),
                         centered: true,
                       });
@@ -362,7 +368,11 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                   .map((e: any) => e.name)
                   .sort((a: any, b: any) => a.length - b.length)}
                 key={post.slug}
-                image={post.bannerImage}
+                image={
+                  post.bannerImage?.includes('fallback')
+                    ? '/images/fallback.webp'
+                    : post.bannerImage
+                }
               />
             ))}
           </div>
@@ -372,7 +382,7 @@ const Service: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
   );
 };
 
-export default Service;
+export default ServicePage;
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const data = await (await fetch(URLBuilder('/static/services'))).json();

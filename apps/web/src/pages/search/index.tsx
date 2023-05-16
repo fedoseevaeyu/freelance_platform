@@ -104,7 +104,7 @@ export default function Search() {
               ))
             )}
           </div>
-          {!!hasNextPage && (
+          {hasNextPage && (
             <div className="flex justify-center">
               <Button
                 onClick={() => fetchNextPage()}

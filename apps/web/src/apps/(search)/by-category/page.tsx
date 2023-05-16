@@ -120,7 +120,9 @@ export default function SearchByCategoryPageContent(props: any) {
                           <div className="flex flex-row items-center">
                             <Avatar
                               src={
-                                post.user.avatarUrl
+                                post.user.avatarUrl &&
+                                !post.user.avatarUrl.includes('fallback') &&
+                                !post.user.avatarUrl.includes('cloudflare-ipfs')
                                   ? assetURLBuilder(post.user.avatarUrl)
                                   : profileImageRouteGenerator(
                                       post.user.username
@@ -205,9 +207,11 @@ export default function SearchByCategoryPageContent(props: any) {
                       >
                         <div className="flex flex-row ">
                           <div className="flex flex-row items-center">
-                            <img
+                            <Avatar
                               src={
-                                post.user.avatarUrl
+                                post.user.avatarUrl &&
+                                !post.user.avatarUrl.includes('fallback') &&
+                                !post.user.avatarUrl.includes('cloudflare-ipfs')
                                   ? assetURLBuilder(post.user.avatarUrl)
                                   : profileImageRouteGenerator(
                                       post.user.username
