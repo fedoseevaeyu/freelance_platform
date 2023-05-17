@@ -542,6 +542,7 @@ function CreateServicePageContent() {
                   </div>
                   <SimpleGrid
                     cols={
+                      // eslint-disable-next-line no-nested-ternary
                       formState.values.packages!.length === 1
                         ? 1
                         : formState.values.packages!.length === 2
@@ -683,12 +684,12 @@ function CreateServicePageContent() {
               <Stepper.Step label="Описание" allowStepSelect={active > 2}>
                 <Editor
                   onSubmit={(d) => {
-                    if (d.length < 100) {
+                    /* if (d.length < 100) {
                       showNotification({
                         color: 'red',
                         message: 'Описание должно быть не менее 100 символов',
                       });
-                    }
+                    } */
                     formState.setFieldValue('description', d);
                     setActive((o) => o + 1);
                   }}

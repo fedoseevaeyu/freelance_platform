@@ -21,9 +21,9 @@ export const validateTitle = (title: string) => {
   return null;
 };
 export const validateDescription = (description: string) => {
-  if (description.length < 100) {
-    return 'Описание должен содержать не менее 100 символов';
-  }
+  /* if (description.length < 100) {
+    return 'Описание должно содержать не менее 100 символов';
+  } */
   if (description.length > 1000) {
     return 'Описания должно содержать не более 1000 символов';
   }
