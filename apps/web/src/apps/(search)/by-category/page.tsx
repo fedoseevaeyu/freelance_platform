@@ -59,7 +59,7 @@ export default function SearchByCategoryPageContent(props: any) {
         {upperFirst(props.name)}
       </h1>
       <div className="flex flex-row flex-wrap items-center justify-center gap-3">
-        Мы нашли
+        По данной категории найдено
         <Badge
           variant="light"
           color="green"
@@ -68,7 +68,7 @@ export default function SearchByCategoryPageContent(props: any) {
             push(routes.searchCategory(query.slug as string, 'services'));
           }}
         >
-          {props.services} {props.services > 1 ? 'Улугу' : 'Услуг'}
+          {'Услуг: '} {props.services}
         </Badge>
         <Badge
           variant="light"
@@ -78,7 +78,7 @@ export default function SearchByCategoryPageContent(props: any) {
             push(routes.searchCategory(query.slug as string, 'jobs'));
           }}
         >
-          {props.jobs} {props.jobs > 1 ? 'Заказов' : 'Заказ'}
+          {'Заказов:'} {props.jobs}
         </Badge>
       </div>
       <Tabs
