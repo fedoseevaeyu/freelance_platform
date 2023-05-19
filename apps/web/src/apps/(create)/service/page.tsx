@@ -277,7 +277,7 @@ function CreateServicePageContent() {
                         required
                         id="title"
                         labelString="Заголовок"
-                        placeholder="Введите заголовок для вашей услуги"
+                        placeholder="Введите название для вашей услуги"
                         labelProps={{
                           className: clsx({
                             [inter.className]: true,
@@ -435,13 +435,41 @@ function CreateServicePageContent() {
                       [inter.className]: true,
                     })}
                   >
-                    Перечислите особенности вашей услуги.
+                    Перечислите особенности для Ваших тарифов.
                   </Text>
-                  <span className="text-sm text-[#6c757d]">
-                    Вам будет предложено выбрать пункты, которые включены в
-                    определенные пакеты вашей услуги
-                  </span>
-                  <div className="mt-5 w-full">
+                  <Text
+                    align="center"
+                    style={{ maxWidth: '750px' }}
+                    className={clsx('text-sm text-[#6c757d]', {
+                      [inter.className]: true,
+                    })}
+                  >
+                    Выделите Ваши конкретные особенности и навыки, которые
+                    хотите предложить заказчикам в рамках данной услуги. Позже
+                    вы сможете указать доступность тех или иных навыков для
+                    каждого отдельного тарифа. Например, вы можете предложить
+                    для более дорогого тарифа сопровождение 3 месяца, а для
+                    более дешевого - 1 месяц.
+                  </Text>
+
+                  <Text
+                    align="center"
+                    style={{ maxWidth: '750px' }}
+                    className={clsx('text-sm text-[#6c757d]', {
+                      [inter.className]: true,
+                    })}
+                  >
+                    Вы должны указать хотя бы одну особенность
+                  </Text>
+
+                  {/* <span className="text-sm text-[#6c757d]">
+                    Выделите Ваши конкретные особенности и навыки,
+                    которые хотите предложить
+                    заказчикам в рамках данной услуги.
+                    Позже вы сможете указать доступность тех или иных особенностей
+                    для каждого отдельного тарифа.
+                  </span> */}
+                  <div className="mt-2 w-full">
                     {features.map((feature, id) => (
                       <div className="my-2 flex w-full flex-row gap-2" key={id}>
                         <TextInput
@@ -515,7 +543,7 @@ function CreateServicePageContent() {
                   </Group>
                 </div>
               </Stepper.Step>
-              <Stepper.Step label="Пакеты" allowStepSelect={active > 1}>
+              <Stepper.Step label="Тарифы" allowStepSelect={active > 1}>
                 <div className="mt-8 flex flex-row gap-4">
                   <div className="flex flex-col">
                     <Text
@@ -523,12 +551,12 @@ function CreateServicePageContent() {
                         [inter.className]: true,
                       })}
                     >
-                      Пакеты
+                      Тарифы
                     </Text>
                     <Button
                       onClick={() => {
                         formState.insertListItem('packages', {
-                          name: 'Пакет',
+                          name: 'Название',
                           price: 0,
                           description: '',
                         });
@@ -566,13 +594,13 @@ function CreateServicePageContent() {
                           {formState.values.packages![index].name}
                         </Text>
                         <TextInput
-                          placeholder="Название пакета"
+                          placeholder="Название тарифа"
                           required
                           {...formState.getInputProps(`packages.${index}.name`)}
                         />
                         <Divider className={'my-2'} />
                         <T
-                          placeholder="Описание пакета"
+                          placeholder="Описание тарифа"
                           required
                           {...formState.getInputProps(
                             `packages.${index}.description`
