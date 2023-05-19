@@ -201,7 +201,7 @@ export default function RegisterPageContent() {
               <Stack>
                 <TextInput
                   label="Имя"
-                  placeholder="Ваше имя"
+                  placeholder="Укажите ваше ФИО"
                   required
                   {...form.getInputProps('name')}
                 />
@@ -210,7 +210,7 @@ export default function RegisterPageContent() {
 
                 <TextInput
                   required
-                  label="Имя пользователя"
+                  label="Логин для платформы"
                   placeholder="super123"
                   {...form.getInputProps('username')}
                 />
@@ -218,11 +218,13 @@ export default function RegisterPageContent() {
                 <PasswordInput
                   required
                   label="Пароль"
+                  placeholder="Введите не менее 8 символов"
                   {...form.getInputProps('password')}
                 />
                 <PasswordInput
                   required
                   label="Подтвердите пароль"
+                  placeholder="Повторите пароль"
                   {...form.getInputProps('confirmPass')}
                 />
                 <Select
