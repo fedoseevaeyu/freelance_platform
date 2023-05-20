@@ -40,7 +40,6 @@ import {
   validatePrice,
   validateTitle,
 } from '../../utils/validate';
-import Editor from './components/editor';
 
 function CreateServicePageContent() {
   const formState = useForm<{
@@ -755,20 +754,117 @@ function CreateServicePageContent() {
                     навыки, которыми вы обладаете и их уровень. Поделитесь любой
                     информацией, которая вам кажется важной для заказчика.
                   </Text>
-                  <div className={'mt-3'} style={{ width: '800px' }}>
-                    <Editor
-                      onSubmit={(d) => {
-                        /* if (d.length < 100) {
-                      showNotification({
-                        color: 'red',
-                        message: 'Описание должно быть не менее 100 символов',
-                      });
-                    } */
-                        formState.setFieldValue('description', d);
-                        setActive((o) => o + 1);
+                  <div className={'mt-1'} style={{ width: '800px' }}>
+                    <Textarea
+                      id="description"
+                      labelString="О себе"
+                      value={formState.values.description}
+                      onChange={(e) =>
+                        formState.setFieldValue('description', e.target.value)
+                      }
+                      placeholder="Напишите немного о себе..."
+                      labelProps={{
+                        className: clsx({
+                          [inter.className]: true,
+                        }),
                       }}
-                      setActive={setActive}
+                      wordsComponent={
+                        <span
+                          className={clsx(
+                            'my-2 ml-auto pr-3 text-sm text-[#6c757d]'
+                          )}
+                        >
+                          {formState.values.description.length}/1000
+                        </span>
+                      }
                     />
+                    <Textarea
+                      id="description"
+                      labelString="Опыт работы"
+                      value={formState.values.description}
+                      onChange={(e) =>
+                        formState.setFieldValue('description', e.target.value)
+                      }
+                      placeholder="Расскажите о своем опыте работы..."
+                      labelProps={{
+                        className: clsx({
+                          [inter.className]: true,
+                        }),
+                      }}
+                      wordsComponent={
+                        <span
+                          className={clsx(
+                            'my-2 ml-auto pr-3 text-sm text-[#6c757d]'
+                          )}
+                        >
+                          {formState.values.description.length}/1000
+                        </span>
+                      }
+                    />
+                    <Textarea
+                      id="description"
+                      labelString="Стеки технологий"
+                      value={formState.values.description}
+                      onChange={(e) =>
+                        formState.setFieldValue('description', e.target.value)
+                      }
+                      placeholder="Расскажите о технологиях, с которыми вы работали..."
+                      labelProps={{
+                        className: clsx({
+                          [inter.className]: true,
+                        }),
+                      }}
+                      wordsComponent={
+                        <span
+                          className={clsx(
+                            'my-2 ml-auto pr-3 text-sm text-[#6c757d]'
+                          )}
+                        >
+                          {formState.values.description.length}/1000
+                        </span>
+                      }
+                    />
+                    <Textarea
+                      id="description"
+                      labelString="Навыки"
+                      value={formState.values.description}
+                      onChange={(e) =>
+                        formState.setFieldValue('description', e.target.value)
+                      }
+                      placeholder="Укажите ваши навыки, релевантные для данной услуги и их уровень..."
+                      labelProps={{
+                        className: clsx({
+                          [inter.className]: true,
+                        }),
+                      }}
+                      wordsComponent={
+                        <span
+                          className={clsx(
+                            'my-2 ml-auto pr-3 text-sm text-[#6c757d]'
+                          )}
+                        >
+                          {formState.values.description.length}/1000
+                        </span>
+                      }
+                    />
+                    <div className="mt-4 flex flex-row items-center justify-center gap-4">
+                      <Button
+                        onClick={() => setActive(2)}
+                        variant="filled"
+                        className={clsx('bg-[#1e88e5] hover:bg-[#1976d2]')}
+                      >
+                        Назад
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          setActive(4);
+                        }}
+                        variant="filled"
+                        className={clsx('bg-[#1e88e5] hover:bg-[#1976d2]')}
+                      >
+                        Далее
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </Stepper.Step>
