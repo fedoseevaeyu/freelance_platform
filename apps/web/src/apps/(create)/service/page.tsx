@@ -731,20 +731,42 @@ function CreateServicePageContent() {
                   </Button>
                 </div>
               </Stepper.Step>
-              <Stepper.Step label="Описание" allowStepSelect={active > 2}>
-                <Editor
-                  onSubmit={(d) => {
-                    /* if (d.length < 100) {
+              <Stepper.Step label="Резюме" allowStepSelect={active > 2}>
+                <Text
+                  align="center"
+                  className={clsx('text-center text-lg font-bold', {
+                    [inter.className]: true,
+                  })}
+                >
+                  Расскажите немного о себе.
+                </Text>
+                <Text
+                  align="center"
+                  style={{ maxWidth: '750px' }}
+                  className={clsx('text-center text-sm text-[#6c757d]', {
+                    [inter.className]: true,
+                  })}
+                >
+                  Кратко опишите свой опыт работы, должности, которые вы
+                  занимали, основные обязанности, стеки технологий, а также
+                  навыки, которыми вы обладаете и их уровень. Поделитесь любой
+                  информацией, которая вам кажется важной для заказчика.
+                </Text>
+                <div className={'mt-3'} style={{ width: '800px' }}>
+                  <Editor
+                    onSubmit={(d) => {
+                      /* if (d.length < 100) {
                       showNotification({
                         color: 'red',
                         message: 'Описание должно быть не менее 100 символов',
                       });
                     } */
-                    formState.setFieldValue('description', d);
-                    setActive((o) => o + 1);
-                  }}
-                  setActive={setActive}
-                />
+                      formState.setFieldValue('description', d);
+                      setActive((o) => o + 1);
+                    }}
+                    setActive={setActive}
+                  />
+                </div>
               </Stepper.Step>
               <Stepper.Step label={'Вложения'}>
                 <Text
