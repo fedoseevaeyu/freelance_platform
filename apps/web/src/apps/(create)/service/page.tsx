@@ -21,7 +21,7 @@ import {
 import { useForm } from '@mantine/form';
 import { showNotification } from '@mantine/notifications';
 import type { PolymorphicComponentProps } from '@mantine/utils';
-import { IconCheck, IconPlus, IconUpload, IconX } from '@tabler/icons-react';
+import { IconCheck, IconUpload, IconX } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import clsx from 'clsx';
@@ -460,7 +460,6 @@ function CreateServicePageContent() {
                     для более дорогого тарифа сопровождение 3 месяца, а для
                     более дешевого - 1 месяц.
                   </Text>
-
                   <Text
                     align="center"
                     style={{ maxWidth: '750px' }}
@@ -470,14 +469,6 @@ function CreateServicePageContent() {
                   >
                     Вы должны указать хотя бы одну особенность
                   </Text>
-
-                  {/* <span className="text-sm text-[#6c757d]">
-                    Выделите Ваши конкретные особенности и навыки,
-                    которые хотите предложить
-                    заказчикам в рамках данной услуги.
-                    Позже вы сможете указать доступность тех или иных особенностей
-                    для каждого отдельного тарифа.
-                  </span> */}
                   <div className="mt-2 w-full">
                     {features.map((feature, id) => (
                       <div className="my-2 flex w-full flex-row gap-2" key={id}>
@@ -574,29 +565,6 @@ function CreateServicePageContent() {
                   хотя бы один тариф.
                 </Text>
                 <div className="mt-8 flex flex-row gap-4">
-                  <div className="flex flex-col">
-                    <Text
-                      className={clsx('text-lg font-bold text-black', {
-                        [inter.className]: true,
-                      })}
-                    >
-                      Тарифы
-                    </Text>
-                    <Button
-                      onClick={() => {
-                        formState.insertListItem('packages', {
-                          name: 'Название',
-                          price: 0,
-                          description: '',
-                        });
-                      }}
-                      disabled={formState.values.packages!.length === 3}
-                      variant="filled"
-                      className={clsx('bg-[#1e88e5] hover:bg-[#1976d2]')}
-                    >
-                      <IconPlus />
-                    </Button>
-                  </div>
                   <SimpleGrid
                     cols={
                       // eslint-disable-next-line no-nested-ternary
@@ -709,16 +677,20 @@ function CreateServicePageContent() {
                           )}
                           type="number"
                         />
-                        <Button
-                          variant="filled"
-                          className="bg-[#e53935] hover:bg-[#d32f2f]"
-                          onClick={() => handlePackageDelete(index)}
-                        >
-                          Удалить
-                        </Button>
+                        <div className="mt-3 flex items-center justify-center">
+                          <Button
+                            variant="filled"
+                            className="bg-[#e53935] hover:bg-[#d32f2f]"
+                            style={{ maxWidth: '50%' }}
+                            onClick={() => handlePackageDelete(index)}
+                          >
+                            Удалить
+                          </Button>
+                        </div>
                       </div>
                     ))}
                   </SimpleGrid>
+                  <div className="border-l-[1px] border-gray-400 pl-3"></div>
                 </div>
                 <div className="mt-4 flex flex-row items-center justify-center gap-4">
                   <Button
@@ -729,11 +701,25 @@ function CreateServicePageContent() {
                     Назад
                   </Button>
                   <Button
+                    color="purple"
+                    className={clsx('bg-purple-600 hover:bg-purple-700')}
+                    onClick={() => {
+                      formState.insertListItem('packages', {
+                        name: 'Тариф',
+                        price: 0,
+                        description: '',
+                      });
+                    }}
+                    disabled={formState.values.packages!.length === 3}
+                  >
+                    Добавить тариф
+                  </Button>
+                  <Button
                     onClick={() => {
                       if (formState.values.packages!.length === 0) {
                         showNotification({
                           color: 'red',
-                          message: 'You must add at least one package',
+                          message: 'Вы должны заполнить хотя бы один тариф!',
                         });
                       }
                       setActive(3);
