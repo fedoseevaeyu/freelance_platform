@@ -94,6 +94,15 @@ function CreateServicePageContent() {
       includedIn: [],
     },
   ]);
+
+  const handlePackageDelete = (index: number) => {
+    if (formState.values.packages) {
+      const updatedPackages = [...formState.values.packages];
+      updatedPackages.splice(index, 1);
+      formState.setFieldValue('packages', updatedPackages);
+    }
+  };
+
   const [active, setActive] = useState(0);
   const { push } = useRouter();
   const [bannerImage, setBannerImage] = useState<File>();
@@ -544,6 +553,26 @@ function CreateServicePageContent() {
                 </div>
               </Stepper.Step>
               <Stepper.Step label="Тарифы" allowStepSelect={active > 1}>
+                <Text
+                  align="center"
+                  className={clsx('text-center text-lg font-bold', {
+                    [inter.className]: true,
+                  })}
+                >
+                  Расскажите о Ваших тарифах.
+                </Text>
+                <Text
+                  align="center"
+                  style={{ maxWidth: '750px' }}
+                  className={clsx('text-center text-sm text-[#6c757d]', {
+                    [inter.className]: true,
+                  })}
+                >
+                  Придумайте любое название тарифа, опишите словами, что в него
+                  входит, входит, а также укажите, сколько времени вам
+                  необходимо на услуги по данному тарифу. Вы должны заполнить
+                  хотя бы один тариф.
+                </Text>
                 <div className="mt-8 flex flex-row gap-4">
                   <div className="flex flex-col">
                     <Text
@@ -680,6 +709,13 @@ function CreateServicePageContent() {
                           )}
                           type="number"
                         />
+                        <Button
+                          variant="filled"
+                          className="bg-[#e53935] hover:bg-[#d32f2f]"
+                          onClick={() => handlePackageDelete(index)}
+                        >
+                          Удалить
+                        </Button>
                       </div>
                     ))}
                   </SimpleGrid>
