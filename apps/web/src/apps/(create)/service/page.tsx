@@ -444,7 +444,7 @@ function CreateServicePageContent() {
                       [inter.className]: true,
                     })}
                   >
-                    Перечислите особенности для Ваших тарифов.
+                    Перечислите особенности для ваших тарифов.
                   </Text>
                   <Text
                     align="center"
@@ -544,26 +544,28 @@ function CreateServicePageContent() {
                 </div>
               </Stepper.Step>
               <Stepper.Step label="Тарифы" allowStepSelect={active > 1}>
-                <Text
-                  align="center"
-                  className={clsx('text-center text-lg font-bold', {
-                    [inter.className]: true,
-                  })}
-                >
-                  Расскажите о Ваших тарифах.
-                </Text>
-                <Text
-                  align="center"
-                  style={{ maxWidth: '750px' }}
-                  className={clsx('text-center text-sm text-[#6c757d]', {
-                    [inter.className]: true,
-                  })}
-                >
-                  Придумайте любое название тарифа, опишите словами, что в него
-                  входит, выберете нужные особенности, а также укажите цену и
-                  сколько времени вам необходимо на услуги по данному тарифу. Вы
-                  должны заполнить хотя бы один тариф.
-                </Text>
+                <div className="mx-auto flex flex-col items-center">
+                  <Text
+                    align="center"
+                    className={clsx('text-center text-lg font-bold', {
+                      [inter.className]: true,
+                    })}
+                  >
+                    Расскажите о ваших тарифах.
+                  </Text>
+                  <Text
+                    align="center"
+                    style={{ maxWidth: '750px' }}
+                    className={clsx('text-center text-sm text-[#6c757d]', {
+                      [inter.className]: true,
+                    })}
+                  >
+                    Придумайте любое название тарифа, опишите словами, что в
+                    него входит, выберете нужные особенности, а также укажите
+                    цену и сколько времени вам необходимо на услуги по данному
+                    тарифу. Вы должны заполнить хотя бы один тариф.
+                  </Text>
+                </div>
                 <div className="mt-8 flex flex-row gap-4">
                   <SimpleGrid
                     cols={
@@ -732,40 +734,42 @@ function CreateServicePageContent() {
                 </div>
               </Stepper.Step>
               <Stepper.Step label="Резюме" allowStepSelect={active > 2}>
-                <Text
-                  align="center"
-                  className={clsx('text-center text-lg font-bold', {
-                    [inter.className]: true,
-                  })}
-                >
-                  Расскажите немного о себе.
-                </Text>
-                <Text
-                  align="center"
-                  style={{ maxWidth: '750px' }}
-                  className={clsx('text-center text-sm text-[#6c757d]', {
-                    [inter.className]: true,
-                  })}
-                >
-                  Кратко опишите свой опыт работы, должности, которые вы
-                  занимали, основные обязанности, стеки технологий, а также
-                  навыки, которыми вы обладаете и их уровень. Поделитесь любой
-                  информацией, которая вам кажется важной для заказчика.
-                </Text>
-                <div className={'mt-3'} style={{ width: '800px' }}>
-                  <Editor
-                    onSubmit={(d) => {
-                      /* if (d.length < 100) {
+                <div className="mx-auto flex flex-col items-center">
+                  <Text
+                    align="center"
+                    className={clsx('text-center text-lg font-bold', {
+                      [inter.className]: true,
+                    })}
+                  >
+                    Расскажите немного о себе.
+                  </Text>
+                  <Text
+                    align="center"
+                    style={{ maxWidth: '750px' }}
+                    className={clsx('text-center text-sm text-[#6c757d]', {
+                      [inter.className]: true,
+                    })}
+                  >
+                    Кратко опишите свой опыт работы, должности, которые вы
+                    занимали, основные обязанности, стеки технологий, а также
+                    навыки, которыми вы обладаете и их уровень. Поделитесь любой
+                    информацией, которая вам кажется важной для заказчика.
+                  </Text>
+                  <div className={'mt-3'} style={{ width: '800px' }}>
+                    <Editor
+                      onSubmit={(d) => {
+                        /* if (d.length < 100) {
                       showNotification({
                         color: 'red',
                         message: 'Описание должно быть не менее 100 символов',
                       });
                     } */
-                      formState.setFieldValue('description', d);
-                      setActive((o) => o + 1);
-                    }}
-                    setActive={setActive}
-                  />
+                        formState.setFieldValue('description', d);
+                        setActive((o) => o + 1);
+                      }}
+                      setActive={setActive}
+                    />
+                  </div>
                 </div>
               </Stepper.Step>
               <Stepper.Step label={'Вложения'}>
@@ -775,8 +779,17 @@ function CreateServicePageContent() {
                     [inter.className]: true,
                   })}
                 >
-                  Добавьте несколько изображений к вашей услуге, чтобы сделать
-                  её более привлекательной и выделяющейся.
+                  Добавьте несколько изображений к вашей услуге.
+                </Text>
+                <Text
+                  align="center"
+                  style={{ maxWidth: '750px' }}
+                  className={clsx('text-center text-sm text-[#6c757d]', {
+                    [inter.className]: true,
+                  })}
+                >
+                  Это сделает её более привлекательной и выделяющейся. Загрузка
+                  обложки обязательна!
                 </Text>
                 <div className="flex flex-row flex-wrap gap-5">
                   <FileButton
@@ -878,7 +891,7 @@ function CreateServicePageContent() {
                       </div>
                     </div>
                   ))}
-                  <div className="mt-8 flex w-full flex-col items-center justify-center">
+                  <div className="mt-3 flex w-full flex-col items-center justify-center">
                     <FileButton
                       onChange={(i) => {
                         setImages((im) => [...im, ...i]);
