@@ -18,6 +18,7 @@ import { AuthService } from './resources/auth/auth.service';
 import { UserMiddleware } from './resources/auth/middleware/auth/auth.middleware';
 import { JobPostModule } from './resources/job-post/job-post.module';
 import { PostsModule } from './resources/posts/posts.module';
+import { OrdersModule } from './resources/orders/orders.module';
 
 @Module({
   providers: [
@@ -37,6 +38,7 @@ import { PostsModule } from './resources/posts/posts.module';
     CategoriesModule,
     TagsModule,
     ServicesModule,
+    OrdersModule,
     JobPostModule,
     PostsModule,
   ],

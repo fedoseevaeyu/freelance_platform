@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-py"
+  provider             = "prisma-client-py"
   recursive_type_depth = 5
 }
 
@@ -36,6 +36,8 @@ model User {
   updatedAt       DateTime  @updatedAt
   jobPosts        JobPost[] @relation(name: "jobposts")
   claimedJobPosts JobPost[] @relation(name: "claimedjobposts")
+  myOrders        Order[]   @relation(name: "clientsorders")
+  orders          Order[]   @relation(name: "freelancersorders")
 }
 
 model Uploads {
@@ -68,25 +70,28 @@ model Tags {
 }
 
 model Service {
-  id          String   @id @unique @default(cuid())
-  title       String
-  description String
-  slug        String   @unique
-  category    Category @relation(fields: [categoryId], references: [id])
-  categoryId  String
-  bannerImage String
-  images      String[]
-  rating      Int      @default(0)
-  ratedBy     Int      @default(0)
+  id           String   @id @unique @default(cuid())
+  title        String
+  description  String
+  workExp      String
+  technologies String
+  skills       String
+  slug         String   @unique
+  category     Category @relation(fields: [categoryId], references: [id])
+  categoryId   String
+  bannerImage  String
+  images       String[]
+  rating       Int      @default(0)
+  ratedBy      Int      @default(0)
 
-  tags     Tags[]
-  package  Package[]
-  features Feature[]
-  review   Review[]
-  user     User?     @relation(fields: [userId], references: [id])
-  userId   String?
-
-  createdAt DateTime @default(now())
+  tags      Tags[]
+  package   Package[]
+  features  Feature[]
+  review    Review[]
+  user      User?     @relation(fields: [userId], references: [id])
+  userId    String?
+  orders    Order[]
+  createdAt DateTime  @default(now())
 }
 
 model Package {
@@ -141,4 +146,35 @@ model JobPost {
   claimed      Boolean   @default(false)
   claimedBy    User?     @relation(fields: [freelancerId], references: [id], name: "claimedjobposts")
   freelancerId String?
+  orders       Order[]
+}
+
+enum OrderStatus {
+  // Отклик
+  Response
+  // Принят отклик
+  Accepted
+  // Отклонен отклик
+  Canceled
+  // Выполнено
+  Done
+}
+
+model Order {
+  id String @id @unique @default(cuid())
+
+  status OrderStatus
+
+  jobPost   JobPost @relation(fields: [jobPostId], references: [id])
+  jobPostId String
+  service   Service @relation(fields: [serviceId], references: [id])
+  serviceId String
+
+  client_agree Boolean @default(false)
+  client       User    @relation(fields: [clientId], references: [id], name: "clientsorders")
+  clientId     String
+
+  freelancer_agree Boolean @default(false)
+  freelancer       User    @relation(fields: [freelancerId], references: [id], name: "freelancersorders")
+  freelancerId     String
 }

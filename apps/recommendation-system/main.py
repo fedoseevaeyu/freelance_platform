@@ -209,6 +209,14 @@ async def load_job_posts():
     job_posts = await prisma.jobpost.find_many(include={
         'category': True,
         'tags': True
+    }, where={
+        'orders': {
+            'every': {
+                'status': {
+                    'notIn': ['Done', 'Accepted']
+                }
+            }
+        }
     })
     res = []
     moscow_timezone = timezone('Europe/Moscow')

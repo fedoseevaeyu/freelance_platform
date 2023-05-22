@@ -247,7 +247,7 @@ async function generateUsers() {
         profileCompleted: faker.datatype.boolean(),
         bio: faker.lorem.sentences(),
         phone: faker.phone.number(),
-        avatarUrl: "fallback.jpg"
+        avatarUrl: 'fallback.jpg',
       },
     });
     clients.push({ ...client, password: pass2 });

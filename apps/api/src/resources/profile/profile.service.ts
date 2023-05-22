@@ -53,16 +53,35 @@ export class ProfileService {
       where: {
         username,
       },
-      select: {
-        id: true,
-        avatarUrl: true,
-        bio: true,
-        country: true,
-        createdAt: true,
-        verified: true,
-        name: true,
-        username: true,
-        role: true,
+      include: {
+        orders: {
+          include: {
+            service: {
+              include: {
+                user: true,
+              },
+            },
+            jobPost: {
+              include: {
+                user: true,
+              },
+            },
+          },
+        },
+        myOrders: {
+          include: {
+            service: {
+              include: {
+                user: true,
+              },
+            },
+            jobPost: {
+              include: {
+                user: true,
+              },
+            },
+          },
+        },
       },
     });
     if (!user) throw new HttpException('Пользователь не найден', 404);

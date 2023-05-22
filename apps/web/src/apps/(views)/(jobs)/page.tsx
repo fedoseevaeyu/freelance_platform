@@ -7,24 +7,68 @@ import {
   Button,
   Divider,
   Image,
+  Select,
   Text,
   Tooltip,
 } from '@mantine/core';
 import { IconCheck } from '@tabler/icons-react';
+import axios from 'axios';
 import clsx from 'clsx';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Carousel } from 'react-responsive-carousel';
 
 import { routes } from '../../config/routes';
 import { PostCard } from '../../ui/card/post';
+import { readCookie } from '../../utils/cookie';
 import { profileImageRouteGenerator } from '../../utils/profile';
-import { assetURLBuilder } from '../../utils/url';
+import { assetURLBuilder, URLBuilder } from '../../utils/url';
 
 export default function JobPostPageContent(props: any) {
   const [send, setSend] = useState(false);
-  const { userType, username } = useUser();
-  const [recommendService, setrecommendService] = useState(3);
+  const [status, setStatus] = useState<string | null>(null);
+  const [choice, setChoice] = useState(false);
+  const [services, setServices] = useState([]);
+  const [service, setService] = useState<string | null>(null);
+  const { id, userType, username } = useUser();
+  const [recommendService, setRecommendService] = useState(3);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    try {
+      if (
+        username &&
+        username !== props.user.username &&
+        userType === 'Freelancer'
+      ) {
+        axios
+          .get(URLBuilder(`/services/user/${username}?take=10`))
+          .then((e) => {
+            setServices(
+              e.data.services.map((s: any) => ({
+                label: s.title,
+                value: s.id,
+              }))
+            );
+          });
+      }
+    } catch {}
+  }, [userType, username]);
+
+  useEffect(() => {
+    if (
+      username &&
+      username !== props.user.username &&
+      userType === 'Freelancer'
+    ) {
+      const my = props.orders.find((e: any) => e.freelancerId === id);
+      if (my) {
+        setSend(true);
+        setStatus(my.status);
+      }
+    }
+  }, [id, userType, username]);
+
   return (
     <Container
       className={clsx('container', {
@@ -35,15 +79,63 @@ export default function JobPostPageContent(props: any) {
       <div className="flex flex-col items-center justify-center ">
         <div className="flex items-center justify-between gap-6">
           <h1 className="break-all text-3xl font-bold">{props.title}</h1>
-          {username !== props.user.username && !send && (
-            <Button
-              variant="filled"
-              className="bg-black text-white"
-              onClick={() => setSend(true)}
-            >
-              Сотрудничать
-            </Button>
-          )}
+          {username !== props.user.username &&
+            userType === 'Freelancer' &&
+            !send &&
+            services.length > 0 && (
+              <>
+                {!choice && (
+                  <Button
+                    variant="filled"
+                    className="bg-black text-white"
+                    onClick={() => setChoice(true)}
+                  >
+                    Сотрудничать
+                  </Button>
+                )}
+                {choice && (
+                  <>
+                    <Select
+                      data={services}
+                      onChange={(e) => setService(e)}
+                      value={service}
+                    />
+                    <Button
+                      variant="filled"
+                      className="bg-black text-white"
+                      disabled={!service || loading}
+                      onClick={() => {
+                        setLoading(true);
+                        const token = readCookie('token');
+                        axios
+                          .post(
+                            URLBuilder(`/orders`),
+                            {
+                              job_post_id: props.id,
+                              service_id: service,
+                              client_id: props.user.id,
+                              freelancer_id: id,
+                            },
+                            {
+                              headers: {
+                                authorization: `Bearer ${token}`,
+                              },
+                            }
+                          )
+                          .then(() => {
+                            setStatus('Response');
+                            setChoice(false);
+                            setSend(true);
+                            setLoading(false);
+                          });
+                      }}
+                    >
+                      Отправить отклик
+                    </Button>
+                  </>
+                )}
+              </>
+            )}
         </div>
         {props.budget && (
           <Tooltip label={`Бюджет этого заказа составляет ${props.budget}`}>
@@ -111,12 +203,28 @@ export default function JobPostPageContent(props: any) {
 
               {send && (
                 <div className="ml-24 flex flex-col">
-                  <Tooltip label={`Вы предложили сотрудничество`}>
-                    <Badge className="w-fit" color="green">
-                      Предложено
+                  <Tooltip label={`Статус`}>
+                    <Badge
+                      className="w-fit"
+                      color={
+                        status === 'Response'
+                          ? 'yellow'
+                          : status === 'Accepted'
+                          ? 'blue'
+                          : status === 'Canceled'
+                          ? 'red'
+                          : 'green'
+                      }
+                    >
+                      {status === 'Response'
+                        ? 'Предложено'
+                        : status === 'Accepted'
+                        ? 'Выполняется'
+                        : status === 'Canceled'
+                        ? 'Отклонено'
+                        : 'Выполнено'}
                     </Badge>
                   </Tooltip>
-                  <span>{props.user.email}</span>
                 </div>
               )}
             </Text>
@@ -228,7 +336,7 @@ export default function JobPostPageContent(props: any) {
               <Button
                 className="mx-auto mt-3 bg-black"
                 onClick={() => {
-                  setrecommendService((prevState) => prevState + 3);
+                  setRecommendService((prevState) => prevState + 3);
                 }}
               >
                 Мне ничего не подошло

@@ -98,8 +98,11 @@ const ServicesTab = ({ username }: Props) => {
           {page.services?.map((service) => (
             <Paper key={service.id} withBorder shadow={'md'} radius="md">
               <Image
-                src={service.bannerImage.includes('fallback')
-                    ? '/images/fallback.webp' : assetURLBuilder(service.bannerImage)}
+                src={
+                  service.bannerImage.includes('fallback')
+                    ? '/images/fallback.webp'
+                    : assetURLBuilder(service.bannerImage)
+                }
                 width="100%"
                 height={'100%'}
                 alt="Service Banner"

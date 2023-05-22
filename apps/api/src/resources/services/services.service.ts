@@ -26,51 +26,54 @@ export class ServicesService {
       title,
     } = data;
 
-    return await this.p.service.create({
-      data: {
-        bannerImage,
-        slug: stringToSlug(title, 10),
-        category: {
-          connect: {
-            id: category,
+    return await this.p.service
+      .create({
+        data: {
+          bannerImage,
+          slug: stringToSlug(title, 10),
+          category: {
+            connect: {
+              id: category,
+            },
+          },
+          title,
+          description,
+          workExp,
+          technologies,
+          skills,
+          images,
+          tags: {
+            connect: tags.map((t) => ({ id: t })),
+          },
+          user: { connect: { id } },
+          package: {
+            create: packages.map((p) => ({
+              features: {
+                create: features.map((f) => ({
+                  name: f.name,
+                  includedIn: f.includedIn,
+                })),
+              },
+              ...p,
+            })),
           },
         },
-        title,
-        description,
-        workExp,
-        technologies,
-        skills,
-        images,
-        tags: {
-          connect: tags.map((t) => ({ id: t })),
+        select: {
+          slug: true,
+          category: true,
         },
-        user: { connect: { id } },
-        package: {
-          create: packages.map((p) => ({
-            features: {
-              create: features.map((f) => ({
-                name: f.name,
-                includedIn: f.includedIn,
-              })),
-            },
-            ...p,
-          })),
-        },
-      },
-      select: {
-        slug: true,
-        category: true,
-      },
-    }).then((e) => {
-      try {
-        this.httpService.axiosRef
-            .post(`http://0.0.0.0:5001/recommendations/clear-cache`);
-      } catch(e) {
-        console.log(e)
-      }
+      })
+      .then((e) => {
+        try {
+          this.httpService.axiosRef.post(
+            `http://0.0.0.0:5001/recommendations/clear-cache`,
+          );
+        } catch (e) {
+          console.log(e);
+        }
 
-      return e;
-    });
+        return e;
+      });
   }
 
   async getService(slug: string, username: string) {
@@ -95,9 +98,11 @@ export class ServicesService {
         workExp: true,
         technologies: true,
         skills: true,
+        orders: true,
 
         user: {
           select: {
+            id: true,
             username: true,
             email: true,
             profileCompleted: true,

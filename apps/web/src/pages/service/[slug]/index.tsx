@@ -10,6 +10,7 @@ import {
   Button,
   Divider,
   Image,
+  Select,
   Table,
   Text,
   Tooltip,
@@ -18,6 +19,7 @@ import {
 import { upperFirst } from '@mantine/hooks';
 import { openModal } from '@mantine/modals';
 import { IconCheck, IconX } from '@tabler/icons-react';
+import axios from 'axios';
 import clsx from 'clsx';
 import type {
   GetStaticPaths,
@@ -27,7 +29,7 @@ import type {
 } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Carousel } from 'react-responsive-carousel';
 
 import type { Service } from '~/types/service';
@@ -36,12 +38,38 @@ import { routes } from '../../../apps/config/routes';
 import { siteName } from '../../../apps/data/site';
 import { PostCard } from '../../../apps/ui/card/post';
 import { MetaTags } from '../../../apps/ui/meta-tags';
+import { readCookie } from '../../../apps/utils/cookie';
 import { profileImageRouteGenerator } from '../../../apps/utils/profile';
 import { assetURLBuilder, URLBuilder } from '../../../apps/utils/url';
 
 const Modal = ({ username, props, p }) => {
   const [send, setSend] = useState(false);
+  const [jobs, setJobs] = useState([]);
+  const [job, setJob] = useState<string | null>(null);
   const { push, asPath } = useRouter();
+
+  const { id, userType } = useUser();
+
+  useEffect(() => {
+    try {
+      if (
+        username &&
+        username !== props.user.username &&
+        userType === 'Client'
+      ) {
+        axios
+          .get(URLBuilder(`/job-post/user/${username}?take=10`))
+          .then((e) => {
+            setJobs(
+              e.data.posts.map((s: any) => ({
+                label: s.title,
+                value: s.id,
+              }))
+            );
+          });
+      }
+    } catch {}
+  }, [userType, username]);
 
   return (
     <div
@@ -51,14 +79,22 @@ const Modal = ({ username, props, p }) => {
     >
       <Text>
         {send
-          ? `Email для связи с ${props.user.name}`
+          ? `Предложено`
           : `Вы действительно хотите нанять ${props.user.name}?`}
       </Text>
       <Text>
         {send
-          ? props.user.email
+          ? 'Предложено'
           : `Выбранный пакет услуг будет стоить ${p.price} рублей.`}
       </Text>
+      <div className="my-2">
+        <Select
+          label="Выберите заказ"
+          data={jobs}
+          onChange={(e) => setJob(e)}
+          value={job}
+        />
+      </div>
       <div className="mt-2 flex flex-col gap-2">
         <Button
           disabled={send}
@@ -74,31 +110,26 @@ const Modal = ({ username, props, p }) => {
                 },
               });
             else {
-              setSend(true);
+              const token = readCookie('token');
+              axios
+                .post(
+                  URLBuilder(`/orders`),
+                  {
+                    job_post_id: job,
+                    service_id: props.id,
+                    client_id: id,
+                    freelancer_id: props.user.id,
+                  },
+                  {
+                    headers: {
+                      authorization: `Bearer ${token}`,
+                    },
+                  }
+                )
+                .then(() => {
+                  setSend(true);
+                });
             }
-            // axios
-            //   .post<{
-            //     id: string;
-            //     amount: string;
-            //     discounted: boolean;
-            //   }>(
-            //     URLBuilder('/order/create'),
-            //     {
-            //       packageId: p.id,
-            //       sellerUsername: props.user.username,
-            //     },
-            //     {
-            //       headers: {
-            //         authorization: `Bearer ${readCookie(
-            //           'token'
-            //         )}`,
-            //       },
-            //     }
-            //   )
-            //   .then((d) => d.data)
-            //   .catch((err) => {
-            //     notifyAboutError(err);
-            //   });
           }}
         >
           {send ? 'Предложено' : 'Предложить'}

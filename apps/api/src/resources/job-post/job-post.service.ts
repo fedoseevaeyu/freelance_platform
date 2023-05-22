@@ -25,40 +25,43 @@ export class JobPostService {
         'Категория с указанным идентификатором не найдена.',
         404,
       );
-    return await this.p.jobPost.create({
-      data: {
-        description,
-        slug: stringToSlug(title, 10),
-        title,
-        user: {
-          connect: { id: userId },
-        },
-        category: {
-          connect: {
-            id: category,
+    return await this.p.jobPost
+      .create({
+        data: {
+          description,
+          slug: stringToSlug(title, 10),
+          title,
+          user: {
+            connect: { id: userId },
           },
+          category: {
+            connect: {
+              id: category,
+            },
+          },
+          tags: {
+            connect: tags.map((tag) => ({ id: tag })),
+          },
+          images,
+          deadline,
+          budget: price,
         },
-        tags: {
-          connect: tags.map((tag) => ({ id: tag })),
+        select: {
+          slug: true,
+          category: true,
         },
-        images,
-        deadline,
-        budget: price,
-      },
-      select: {
-        slug: true,
-        category: true,
-      },
-    }).then((e) => {
-      try {
-        this.httpService.axiosRef
-            .post(`http://0.0.0.0:5001/recommendations/clear-cache`);
-      } catch(e) {
-        console.log(e)
-      }
+      })
+      .then((e) => {
+        try {
+          this.httpService.axiosRef.post(
+            `http://0.0.0.0:5001/recommendations/clear-cache`,
+          );
+        } catch (e) {
+          console.log(e);
+        }
 
-      return e;
-    });
+        return e;
+      });
   }
   async getJobPost(slug: string) {
     const post = await this.p.jobPost.findFirst({
@@ -68,6 +71,7 @@ export class JobPostService {
       select: {
         user: {
           select: {
+            id: true,
             name: true,
             email: true,
             verified: true,
@@ -84,6 +88,7 @@ export class JobPostService {
             id: true,
           },
         },
+        orders: true,
         deadline: true,
         description: true,
         images: true,
