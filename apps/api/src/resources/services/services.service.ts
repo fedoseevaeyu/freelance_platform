@@ -16,6 +16,9 @@ export class ServicesService {
       bannerImage,
       category,
       description,
+      workExp,
+      technologies,
+      skills,
       features,
       images,
       packages,
@@ -34,6 +37,9 @@ export class ServicesService {
         },
         title,
         description,
+        workExp,
+        technologies,
+        skills,
         images,
         tags: {
           connect: tags.map((t) => ({ id: t })),
@@ -86,6 +92,9 @@ export class ServicesService {
         category: true,
         createdAt: true,
         description: true,
+        workExp: true,
+        technologies: true,
+        skills: true,
 
         user: {
           select: {
@@ -181,6 +190,9 @@ export class ServicesService {
         title: true,
         createdAt: true,
         description: true,
+        workExp: true,
+        technologies: true,
+        skills: true,
         bannerImage: true,
         package: {
           select: {
@@ -248,6 +260,9 @@ export class ServicesService {
         title: true,
         createdAt: true,
         description: true,
+        workExp: true,
+        technologies: true,
+        skills: true,
         bannerImage: true,
         package: {
           select: {

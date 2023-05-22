@@ -67,16 +67,19 @@ model Tags {
 }
 
 model Service {
-  id          String   @id @unique @default(cuid())
-  title       String
-  description String
-  slug        String   @unique
-  category    Category @relation(fields: [categoryId], references: [id])
-  categoryId  String
-  bannerImage String
-  images      String[]
-  rating      Int      @default(0)
-  ratedBy     Int      @default(0)
+  id            String   @id @unique @default(cuid())
+  title         String
+  description   String
+  workExp       String
+  technologies  String
+  skills        String
+  slug          String   @unique
+  category      Category @relation(fields: [categoryId], references: [id])
+  categoryId    String
+  bannerImage   String
+  images        String[]
+  rating        Int      @default(0)
+  ratedBy       Int      @default(0)
 
   tags     Tags[]
   package  Package[]
