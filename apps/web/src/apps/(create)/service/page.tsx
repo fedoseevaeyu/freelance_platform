@@ -45,6 +45,9 @@ function CreateServicePageContent() {
   const formState = useForm<{
     title: string;
     description: string;
+    workExp: string;
+    technologies: string;
+    skills: string;
     price: string;
     category: string;
     packages?: {
@@ -58,11 +61,14 @@ function CreateServicePageContent() {
     initialValues: {
       title: '',
       description: '',
+      workExp: '',
+      technologies: '',
+      skills: '',
       price: '',
       category: '',
       packages: [
         {
-          name: 'Название',
+          name: 'Тариф',
           price: 0,
           description: '',
           deliveryDays: 0,
@@ -192,6 +198,9 @@ function CreateServicePageContent() {
                 category: values.category,
                 description: values.description,
                 features,
+                workExp: values.workExp,
+                technologies: values.technologies,
+                skills: values.skills,
                 packages: values.packages!.map((p) => ({
                   ...p,
                   price: Number(p.price),
@@ -779,11 +788,11 @@ function CreateServicePageContent() {
                       }
                     />
                     <Textarea
-                      id="description"
+                      id="workExp"
                       labelString="Опыт работы"
-                      value={formState.values.description}
+                      value={formState.values.workExp}
                       onChange={(e) =>
-                        formState.setFieldValue('description', e.target.value)
+                        formState.setFieldValue('workExp', e.target.value)
                       }
                       placeholder="Расскажите о своем опыте работы..."
                       labelProps={{
@@ -797,16 +806,16 @@ function CreateServicePageContent() {
                             'my-2 ml-auto pr-3 text-sm text-[#6c757d]'
                           )}
                         >
-                          {formState.values.description.length}/1000
+                          {formState.values.workExp.length}/1000
                         </span>
                       }
                     />
                     <Textarea
-                      id="description"
+                      id="technologies"
                       labelString="Стеки технологий"
-                      value={formState.values.description}
+                      value={formState.values.technologies}
                       onChange={(e) =>
-                        formState.setFieldValue('description', e.target.value)
+                        formState.setFieldValue('technologies', e.target.value)
                       }
                       placeholder="Расскажите о технологиях, с которыми вы работали..."
                       labelProps={{
@@ -820,16 +829,16 @@ function CreateServicePageContent() {
                             'my-2 ml-auto pr-3 text-sm text-[#6c757d]'
                           )}
                         >
-                          {formState.values.description.length}/1000
+                          {formState.values.technologies.length}/1000
                         </span>
                       }
                     />
                     <Textarea
-                      id="description"
+                      id="skills"
                       labelString="Навыки"
-                      value={formState.values.description}
+                      value={formState.values.skills}
                       onChange={(e) =>
-                        formState.setFieldValue('description', e.target.value)
+                        formState.setFieldValue('skills', e.target.value)
                       }
                       placeholder="Укажите ваши навыки, релевантные для данной услуги и их уровень..."
                       labelProps={{
@@ -843,7 +852,7 @@ function CreateServicePageContent() {
                             'my-2 ml-auto pr-3 text-sm text-[#6c757d]'
                           )}
                         >
-                          {formState.values.description.length}/1000
+                          {formState.values.skills.length}/1000
                         </span>
                       }
                     />

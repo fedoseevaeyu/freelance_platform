@@ -54,7 +54,11 @@ const Modal = ({ username, props, p }) => {
           ? `Email для связи с ${props.user.name}`
           : `Вы действительно хотите нанять ${props.user.name}?`}
       </Text>
-      <Text>{send ? props.user.email : `Выбранный пакет услуг будет стоить ${p.price} рублей.`}</Text>
+      <Text>
+        {send
+          ? props.user.email
+          : `Выбранный пакет услуг будет стоить ${p.price} рублей.`}
+      </Text>
       <div className="mt-2 flex flex-col gap-2">
         <Button
           disabled={send}
@@ -110,6 +114,8 @@ const ServicePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
   const { username } = useUser();
   useHydrateUserContext();
   useIssueNewAuthToken();
+
+  const [recommendJobs, setrecommendJobs] = useState(3);
 
   return (
     <Container
@@ -349,7 +355,7 @@ const ServicePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
         </tbody>
       </Table>
 
-      {props.recommendJobs.length > 0 && (
+      {props.recommendJobs.length > 0 ? (
         <>
           <Text
             className={clsx('my-4 text-center text-2xl font-bold', {
@@ -359,23 +365,46 @@ const ServicePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
             Предложенные заказы
           </Text>
           <div className="grid gap-[12px] md:grid-cols-3">
-            {props.recommendJobs.map((post) => (
-              <PostCard
-                {...post}
-                type="job"
-                badgeLabel={post.category.name}
-                tags={post.tags
-                  .map((e: any) => e.name)
-                  .sort((a: any, b: any) => a.length - b.length)}
-                key={post.slug}
-                image={
-                  post.bannerImage?.includes('fallback')
-                    ? '/images/fallback.webp'
-                    : post.bannerImage
-                }
-              />
-            ))}
+            {props.recommendJobs
+              .slice(recommendJobs > 3 ? recommendJobs - 3 : 0, recommendJobs)
+              .map((post) => (
+                <PostCard
+                  {...post}
+                  type="job"
+                  badgeLabel={post.category.name}
+                  tags={post.tags
+                    .map((e: any) => e.name)
+                    .sort((a: any, b: any) => a.length - b.length)}
+                  key={post.slug}
+                  image={
+                    post.bannerImage?.includes('fallback')
+                      ? '/images/fallback.webp'
+                      : post.bannerImage
+                  }
+                />
+              ))}
           </div>
+          {props.recommendJobs.length > recommendJobs && (
+            <Button
+              className="mx-auto mt-3 bg-black"
+              onClick={() => {
+                setrecommendJobs((prevState) => prevState + 3);
+              }}
+            >
+              Мне ничего не подошло
+            </Button>
+          )}
+        </>
+      ) : (
+        <>
+          <Text
+            className={clsx('my-4 text-center text-2xl font-bold', {
+              [inter.className]: true,
+            })}
+          >
+            Предложенные заказы
+          </Text>
+          Мы ничего не нашли...
         </>
       )}
     </Container>

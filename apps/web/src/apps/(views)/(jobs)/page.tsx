@@ -24,6 +24,7 @@ import { assetURLBuilder } from '../../utils/url';
 export default function JobPostPageContent(props: any) {
   const [send, setSend] = useState(false);
   const { userType, username } = useUser();
+  const [recommendService, setrecommendService] = useState(3);
   return (
     <Container
       className={clsx('container', {
@@ -190,7 +191,7 @@ export default function JobPostPageContent(props: any) {
           </>
         )}
 
-        {userType !== 'Freelancer' && props.recommendServices.length > 0 && (
+        {userType !== 'Freelancer' && props.recommendServices.length > 0 ? (
           <>
             <Divider orientation="horizontal" className={clsx('my-4 w-full')} />
             <Text
@@ -201,23 +202,50 @@ export default function JobPostPageContent(props: any) {
               Предложенные услуги
             </Text>
             <div className="grid gap-[12px] md:grid-cols-3">
-              {props.recommendServices.map((post: any) => (
-                <PostCard
-                  {...post}
-                  type="service"
-                  badgeLabel={post.category.name}
-                  tags={post.tags
-                    .map((e: any) => e.name)
-                    .sort((a: any, b: any) => a.length - b.length)}
-                  key={post.slug}
-                  image={
-                    post.bannerImage.includes('fallback')
-                      ? '/images/fallback.webp'
-                      : post.bannerImage
-                  }
-                />
-              ))}
+              {props.recommendServices
+                .slice(
+                  recommendService > 3 ? recommendService - 3 : 0,
+                  recommendService
+                )
+                .map((post) => (
+                  <PostCard
+                    {...post}
+                    type="service"
+                    badgeLabel={post.category.name}
+                    tags={post.tags
+                      .map((e: any) => e.name)
+                      .sort((a: any, b: any) => a.length - b.length)}
+                    key={post.slug}
+                    image={
+                      post.bannerImage.includes('fallback')
+                        ? '/images/fallback.webp'
+                        : post.bannerImage
+                    }
+                  />
+                ))}
             </div>
+            {props.recommendServices.length > recommendService && (
+              <Button
+                className="mx-auto mt-3 bg-black"
+                onClick={() => {
+                  setrecommendService((prevState) => prevState + 3);
+                }}
+              >
+                Мне ничего не подошло
+              </Button>
+            )}
+          </>
+        ) : (
+          <>
+            <Divider orientation="horizontal" className={clsx('my-4 w-full')} />
+            <Text
+              className={clsx('my-4 text-center text-2xl font-bold', {
+                [inter.className]: true,
+              })}
+            >
+              Предложенные услуги
+            </Text>
+            Мы ничего не нашли...
           </>
         )}
       </div>

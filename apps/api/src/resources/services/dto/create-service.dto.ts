@@ -31,6 +31,15 @@ export class CreateServiceDTO {
   description: string;
 
   @IsString()
+  workExp: string;
+
+  @IsString()
+  technologies: string;
+
+  @IsString()
+  skills: string;
+
+  @IsString()
   category: string;
 
   @IsString()

@@ -3,6 +3,9 @@ export interface Service {
   category: Category;
   createdAt: string;
   description: string;
+  workExp: string;
+  technologies: string;
+  skills: string;
   user: Freelancer;
   images: string[];
   id: string;
