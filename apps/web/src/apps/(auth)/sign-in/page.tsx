@@ -22,6 +22,7 @@ import { useState } from 'react';
 import type { RegisterResponse } from '~/types/response/register';
 
 import { routes } from '../../config/routes';
+import { siteName } from '../../data/site';
 import EmailField from '../../forms/fields/email';
 import { createCookie } from '../../utils/cookie';
 import { notifyAboutError } from '../../utils/error';
@@ -87,7 +88,7 @@ export default function LoginPageContent() {
         })}
       >
         <span className="bg-gradient-to-r from-[#3b82f6] to-[#2dd4bf] bg-clip-text text-center text-transparent">
-          Freelance Platform
+          {siteName}
         </span>
       </Text>
 

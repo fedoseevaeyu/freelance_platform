@@ -21,7 +21,7 @@ import {
 import { useForm } from '@mantine/form';
 import { showNotification } from '@mantine/notifications';
 import type { PolymorphicComponentProps } from '@mantine/utils';
-import { IconCheck, IconPlus, IconUpload, IconX } from '@tabler/icons-react';
+import { IconCheck, IconUpload, IconX } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import clsx from 'clsx';
@@ -40,7 +40,6 @@ import {
   validatePrice,
   validateTitle,
 } from '../../utils/validate';
-import Editor from './components/editor';
 
 function CreateServicePageContent() {
   const formState = useForm<{
@@ -94,6 +93,15 @@ function CreateServicePageContent() {
       includedIn: [],
     },
   ]);
+
+  const handlePackageDelete = (index: number) => {
+    if (formState.values.packages) {
+      const updatedPackages = [...formState.values.packages];
+      updatedPackages.splice(index, 1);
+      formState.setFieldValue('packages', updatedPackages);
+    }
+  };
+
   const [active, setActive] = useState(0);
   const { push } = useRouter();
   const [bannerImage, setBannerImage] = useState<File>();
@@ -277,7 +285,7 @@ function CreateServicePageContent() {
                         required
                         id="title"
                         labelString="Заголовок"
-                        placeholder="Введите заголовок для вашей услуги"
+                        placeholder="Введите название для вашей услуги"
                         labelProps={{
                           className: clsx({
                             [inter.className]: true,
@@ -435,13 +443,32 @@ function CreateServicePageContent() {
                       [inter.className]: true,
                     })}
                   >
-                    Перечислите особенности вашей услуги.
+                    Перечислите особенности для ваших тарифов.
                   </Text>
-                  <span className="text-sm text-[#6c757d]">
-                    Вам будет предложено выбрать пункты, которые включены в
-                    определенные пакеты вашей услуги
-                  </span>
-                  <div className="mt-5 w-full">
+                  <Text
+                    align="center"
+                    style={{ maxWidth: '750px' }}
+                    className={clsx('text-sm text-[#6c757d]', {
+                      [inter.className]: true,
+                    })}
+                  >
+                    Выделите Ваши конкретные особенности и навыки, которые
+                    хотите предложить заказчикам в рамках данной услуги. Позже
+                    вы сможете указать доступность тех или иных навыков для
+                    каждого отдельного тарифа. Например, вы можете предложить
+                    для более дорогого тарифа сопровождение 3 месяца, а для
+                    более дешевого - 1 месяц.
+                  </Text>
+                  <Text
+                    align="center"
+                    style={{ maxWidth: '750px' }}
+                    className={clsx('text-sm text-[#6c757d]', {
+                      [inter.className]: true,
+                    })}
+                  >
+                    Вы должны указать хотя бы одну особенность
+                  </Text>
+                  <div className="mt-2 w-full">
                     {features.map((feature, id) => (
                       <div className="my-2 flex w-full flex-row gap-2" key={id}>
                         <TextInput
@@ -515,33 +542,33 @@ function CreateServicePageContent() {
                   </Group>
                 </div>
               </Stepper.Step>
-              <Stepper.Step label="Пакеты" allowStepSelect={active > 1}>
+              <Stepper.Step label="Тарифы" allowStepSelect={active > 1}>
+                <div className="mx-auto flex flex-col items-center">
+                  <Text
+                    align="center"
+                    className={clsx('text-center text-lg font-bold', {
+                      [inter.className]: true,
+                    })}
+                  >
+                    Расскажите о ваших тарифах.
+                  </Text>
+                  <Text
+                    align="center"
+                    style={{ maxWidth: '750px' }}
+                    className={clsx('text-center text-sm text-[#6c757d]', {
+                      [inter.className]: true,
+                    })}
+                  >
+                    Придумайте любое название тарифа, опишите словами, что в
+                    него входит, выберете нужные особенности, а также укажите
+                    цену и сколько времени вам необходимо на услуги по данному
+                    тарифу. Вы должны заполнить хотя бы один тариф.
+                  </Text>
+                </div>
                 <div className="mt-8 flex flex-row gap-4">
-                  <div className="flex flex-col">
-                    <Text
-                      className={clsx('text-lg font-bold text-black', {
-                        [inter.className]: true,
-                      })}
-                    >
-                      Пакеты
-                    </Text>
-                    <Button
-                      onClick={() => {
-                        formState.insertListItem('packages', {
-                          name: 'Пакет',
-                          price: 0,
-                          description: '',
-                        });
-                      }}
-                      disabled={formState.values.packages!.length === 3}
-                      variant="filled"
-                      className={clsx('bg-[#1e88e5] hover:bg-[#1976d2]')}
-                    >
-                      <IconPlus />
-                    </Button>
-                  </div>
                   <SimpleGrid
                     cols={
+                      // eslint-disable-next-line no-nested-ternary
                       formState.values.packages!.length === 1
                         ? 1
                         : formState.values.packages!.length === 2
@@ -565,13 +592,13 @@ function CreateServicePageContent() {
                           {formState.values.packages![index].name}
                         </Text>
                         <TextInput
-                          placeholder="Название пакета"
+                          placeholder="Название тарифа"
                           required
                           {...formState.getInputProps(`packages.${index}.name`)}
                         />
                         <Divider className={'my-2'} />
                         <T
-                          placeholder="Описание пакета"
+                          placeholder="Описание тарифа"
                           required
                           {...formState.getInputProps(
                             `packages.${index}.description`
@@ -651,9 +678,20 @@ function CreateServicePageContent() {
                           )}
                           type="number"
                         />
+                        <div className="mt-3 flex items-center justify-center">
+                          <Button
+                            variant="filled"
+                            className="bg-[#e53935] hover:bg-[#d32f2f]"
+                            style={{ maxWidth: '50%' }}
+                            onClick={() => handlePackageDelete(index)}
+                          >
+                            Удалить
+                          </Button>
+                        </div>
                       </div>
                     ))}
                   </SimpleGrid>
+                  <div className="border-l-[1px] border-gray-400 pl-3"></div>
                 </div>
                 <div className="mt-4 flex flex-row items-center justify-center gap-4">
                   <Button
@@ -664,11 +702,25 @@ function CreateServicePageContent() {
                     Назад
                   </Button>
                   <Button
+                    color="purple"
+                    className={clsx('bg-purple-600 hover:bg-purple-700')}
+                    onClick={() => {
+                      formState.insertListItem('packages', {
+                        name: 'Тариф',
+                        price: 0,
+                        description: '',
+                      });
+                    }}
+                    disabled={formState.values.packages!.length === 3}
+                  >
+                    Добавить тариф
+                  </Button>
+                  <Button
                     onClick={() => {
                       if (formState.values.packages!.length === 0) {
                         showNotification({
                           color: 'red',
-                          message: 'You must add at least one package',
+                          message: 'Вы должны заполнить хотя бы один тариф!',
                         });
                       }
                       setActive(3);
@@ -680,20 +732,141 @@ function CreateServicePageContent() {
                   </Button>
                 </div>
               </Stepper.Step>
-              <Stepper.Step label="Описание" allowStepSelect={active > 2}>
-                <Editor
-                  onSubmit={(d) => {
-                    if (d.length < 100) {
-                      showNotification({
-                        color: 'red',
-                        message: 'Описание должно быть не менее 100 символов',
-                      });
-                    }
-                    formState.setFieldValue('description', d);
-                    setActive((o) => o + 1);
-                  }}
-                  setActive={setActive}
-                />
+              <Stepper.Step label="Резюме" allowStepSelect={active > 2}>
+                <div className="mx-auto flex flex-col items-center">
+                  <Text
+                    align="center"
+                    className={clsx('text-center text-lg font-bold', {
+                      [inter.className]: true,
+                    })}
+                  >
+                    Расскажите немного о себе.
+                  </Text>
+                  <Text
+                    align="center"
+                    style={{ maxWidth: '750px' }}
+                    className={clsx('text-center text-sm text-[#6c757d]', {
+                      [inter.className]: true,
+                    })}
+                  >
+                    Кратко опишите свой опыт работы, должности, которые вы
+                    занимали, основные обязанности, стеки технологий, а также
+                    навыки, которыми вы обладаете и их уровень. Поделитесь любой
+                    информацией, которая вам кажется важной для заказчика.
+                  </Text>
+                  <div className={'mt-1'} style={{ width: '800px' }}>
+                    <Textarea
+                      id="description"
+                      labelString="О себе"
+                      value={formState.values.description}
+                      onChange={(e) =>
+                        formState.setFieldValue('description', e.target.value)
+                      }
+                      placeholder="Напишите немного о себе..."
+                      labelProps={{
+                        className: clsx({
+                          [inter.className]: true,
+                        }),
+                      }}
+                      wordsComponent={
+                        <span
+                          className={clsx(
+                            'my-2 ml-auto pr-3 text-sm text-[#6c757d]'
+                          )}
+                        >
+                          {formState.values.description.length}/1000
+                        </span>
+                      }
+                    />
+                    <Textarea
+                      id="description"
+                      labelString="Опыт работы"
+                      value={formState.values.description}
+                      onChange={(e) =>
+                        formState.setFieldValue('description', e.target.value)
+                      }
+                      placeholder="Расскажите о своем опыте работы..."
+                      labelProps={{
+                        className: clsx({
+                          [inter.className]: true,
+                        }),
+                      }}
+                      wordsComponent={
+                        <span
+                          className={clsx(
+                            'my-2 ml-auto pr-3 text-sm text-[#6c757d]'
+                          )}
+                        >
+                          {formState.values.description.length}/1000
+                        </span>
+                      }
+                    />
+                    <Textarea
+                      id="description"
+                      labelString="Стеки технологий"
+                      value={formState.values.description}
+                      onChange={(e) =>
+                        formState.setFieldValue('description', e.target.value)
+                      }
+                      placeholder="Расскажите о технологиях, с которыми вы работали..."
+                      labelProps={{
+                        className: clsx({
+                          [inter.className]: true,
+                        }),
+                      }}
+                      wordsComponent={
+                        <span
+                          className={clsx(
+                            'my-2 ml-auto pr-3 text-sm text-[#6c757d]'
+                          )}
+                        >
+                          {formState.values.description.length}/1000
+                        </span>
+                      }
+                    />
+                    <Textarea
+                      id="description"
+                      labelString="Навыки"
+                      value={formState.values.description}
+                      onChange={(e) =>
+                        formState.setFieldValue('description', e.target.value)
+                      }
+                      placeholder="Укажите ваши навыки, релевантные для данной услуги и их уровень..."
+                      labelProps={{
+                        className: clsx({
+                          [inter.className]: true,
+                        }),
+                      }}
+                      wordsComponent={
+                        <span
+                          className={clsx(
+                            'my-2 ml-auto pr-3 text-sm text-[#6c757d]'
+                          )}
+                        >
+                          {formState.values.description.length}/1000
+                        </span>
+                      }
+                    />
+                    <div className="mt-4 flex flex-row items-center justify-center gap-4">
+                      <Button
+                        onClick={() => setActive(2)}
+                        variant="filled"
+                        className={clsx('bg-[#1e88e5] hover:bg-[#1976d2]')}
+                      >
+                        Назад
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          setActive(4);
+                        }}
+                        variant="filled"
+                        className={clsx('bg-[#1e88e5] hover:bg-[#1976d2]')}
+                      >
+                        Далее
+                      </Button>
+                    </div>
+                  </div>
+                </div>
               </Stepper.Step>
               <Stepper.Step label={'Вложения'}>
                 <Text
@@ -702,8 +875,17 @@ function CreateServicePageContent() {
                     [inter.className]: true,
                   })}
                 >
-                  Добавьте несколько изображений к вашей услуге, чтобы сделать
-                  её более привлекательной и выделяющейся.
+                  Добавьте несколько изображений к вашей услуге.
+                </Text>
+                <Text
+                  align="center"
+                  style={{ maxWidth: '750px' }}
+                  className={clsx('text-center text-sm text-[#6c757d]', {
+                    [inter.className]: true,
+                  })}
+                >
+                  Это сделает её более привлекательной и выделяющейся. Загрузка
+                  обложки обязательна!
                 </Text>
                 <div className="flex flex-row flex-wrap gap-5">
                   <FileButton
@@ -805,7 +987,7 @@ function CreateServicePageContent() {
                       </div>
                     </div>
                   ))}
-                  <div className="mt-8 flex w-full flex-col items-center justify-center">
+                  <div className="mt-3 flex w-full flex-col items-center justify-center">
                     <FileButton
                       onChange={(i) => {
                         setImages((im) => [...im, ...i]);

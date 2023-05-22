@@ -64,11 +64,13 @@ export default function Editor(props: {
         <RichTextEditor.Content />
         <div
           className={clsx('my-2 flex items-end justify-end pr-3 text-sm ', {
-            'text-red-500': (editor?.getText()?.length ?? 0) < 100,
-            'text-green-500': (editor?.getText()?.length ?? 0) >= 100,
+            /* 'text-red-500': (editor?.getText()?.length ?? 0) < 100,
+            'text-green-500': (editor?.getText()?.length ?? 0) >= 100, */
+            'text-[#6c757d]': (editor?.getText()?.length ?? 0) < 1000,
+            'text-red-500': (editor?.getText()?.length ?? 0) >= 1000,
           })}
         >
-          {editor?.getText()?.length ?? 0}
+          {editor?.getText()?.length ?? 0}/1000
         </div>
       </RichTextEditor>
       <Group position="center" className="mt-5">

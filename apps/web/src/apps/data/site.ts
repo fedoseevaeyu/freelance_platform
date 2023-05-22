@@ -1,4 +1,4 @@
-export const siteName = 'Freelance Platform';
-export const siteUrl = 'https://freelance-platform.ru';
-export const siteDomain = 'freelance-platform.ru';
+export const siteName = 'Разрабы&Заказы';
+export const siteUrl = 'https://devmatch.ru';
+export const siteDomain = 'devmatch.ru';
 export const siteLogo = '/logo.png';

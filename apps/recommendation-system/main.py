@@ -53,12 +53,49 @@ def embed_text_using_bert(text):
 
     return embeddings.squeeze().numpy()
 
+def normalize_parameters(services: List[Dict], job_posts: List[Dict]) -> None:
+    # Normalize category and tag IDs
+    category_mapping = {}
+    tag_mapping = {}
+    category_count = 0
+    tag_count = 0
+
+    for service in services:
+        if service['category_id'] not in category_mapping:
+            category_mapping[service['category_id']] = category_count
+            category_count += 1
+        service['category_id'] = category_mapping[service['category_id']]
+
+        normalized_tag_ids = []
+        for tag_id in service['tag_ids']:
+            if tag_id not in tag_mapping:
+                tag_mapping[tag_id] = tag_count
+                tag_count += 1
+            normalized_tag_ids.append(tag_mapping[tag_id])
+        service['tag_ids'] = normalized_tag_ids
+
+    for job in job_posts:
+        if job['category_id'] not in category_mapping:
+            category_mapping[job['category_id']] = category_count
+            category_count += 1
+        job['category_id'] = category_mapping[job['category_id']]
+
+        normalized_tag_ids = []
+        for tag_id in job['tag_ids']:
+            if tag_id not in tag_mapping:
+                tag_mapping[tag_id] = tag_count
+                tag_count += 1
+            normalized_tag_ids.append(tag_mapping[tag_id])
+        job['tag_ids'] = normalized_tag_ids
 
 def calculate_similarity(services: List[Dict], job_posts: List[Dict], embeddings: np.ndarray) -> np.ndarray:
     """
     Эта функция принимает список услуг, заказов и их векторные представления,
     и вычисляет матрицу сходства на основе косинусного сходства и других метрик.
     """
+
+    # Нормализация параметров
+    normalize_parameters(services, job_posts)
 
     # Инициализация параметров весов
     category_weight = 0.3
@@ -120,7 +157,8 @@ async def get_recommendations() -> Dict:
 
     # Для каждой услуги три наиболее подходящих заказа
     for i, service in enumerate(services):
-        top_job_indices = cosine_similarities[i, len(services):].argsort()[-3:][::-1]
+        similarity_scores = cosine_similarities[i, len(services):]
+        top_job_indices = np.where(similarity_scores > 0.5)[0]  # Фильтрация по коэффициенту схожести
         top_jobs = [job_posts[j] for j in top_job_indices]
         recommendations['services'].append({
             'service': service,
@@ -129,7 +167,8 @@ async def get_recommendations() -> Dict:
 
     # Для каждого заказа три наиболее подходящих услуги
     for i, job in enumerate(job_posts):
-        top_service_indices = cosine_similarities[i + len(services), :len(services)].argsort()[-3:][::-1]
+        similarity_scores = cosine_similarities[i + len(services), :len(services)]
+        top_service_indices = np.where(similarity_scores > 0.5)[0]  # Фильтрация по коэффициенту схожести
         top_services = [services[j] for j in top_service_indices]
         recommendations['orders'].append({
             'order': job,
@@ -137,7 +176,6 @@ async def get_recommendations() -> Dict:
         })
 
     return recommendations
-
 
 @alru_cache(maxsize=100)
 async def load_services():
