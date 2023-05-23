@@ -87,7 +87,7 @@ const Modal = ({ username, props, p }) => {
       <Text>
         {send
           ? 'Предложено'
-          : `Выбранный пакет услуг будет стоить ${p.price} рублей.`}
+          : `Выбранный тариф услуг будет стоить ${p.price} рублей.`}
       </Text>
       <div className="my-2">
         <Select
@@ -280,7 +280,7 @@ const ServicePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
         })}
         id="packages-offered"
       >
-        Пакеты
+        Тарифы
       </Text>
 
       <Table striped highlightOnHover withBorder withColumnBorders>
@@ -374,9 +374,13 @@ const ServicePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
       </Table>
 
       {props.user.username === username ? (
-        <tr>
+        <div className={'max-w-full items-center text-center'}>
           {props.recommendJobs.length > 0 ? (
             <>
+              <Divider
+                orientation="horizontal"
+                className={clsx('my-4 w-full')}
+              />
               <Text
                 className={clsx('my-4 text-center text-2xl font-bold', {
                   [inter.className]: true,
@@ -420,8 +424,12 @@ const ServicePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
             </>
           ) : (
             <>
+              <Divider
+                orientation="horizontal"
+                className={clsx('my-4 w-full')}
+              />
               <Text
-                className={clsx('my-4 text-center text-2xl font-bold', {
+                className={clsx('mb-4 text-center text-2xl font-bold', {
                   [inter.className]: true,
                 })}
               >
@@ -430,7 +438,7 @@ const ServicePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
               Мы ничего не нашли...
             </>
           )}
-        </tr>
+        </div>
       ) : null}
     </Container>
   );

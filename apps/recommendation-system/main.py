@@ -198,6 +198,9 @@ async def load_services():
             'text': ' '.join([
                 service.title,
                 service.description,
+                service.workExp,
+                service.skills,
+                service.technologies
             ]),
         })
 

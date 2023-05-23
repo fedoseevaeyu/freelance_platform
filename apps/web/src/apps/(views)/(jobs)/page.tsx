@@ -300,7 +300,7 @@ export default function JobPostPageContent(props: any) {
         )}
 
         {props.user.username === username ? (
-          <tr>
+          <div className={'w-full items-center text-center'}>
             {userType !== 'Freelancer' && props.recommendServices.length > 0 ? (
               <>
                 <Divider
@@ -355,7 +355,7 @@ export default function JobPostPageContent(props: any) {
                   className={clsx('my-4 w-full')}
                 />
                 <Text
-                  className={clsx('my-4 text-center text-2xl font-bold', {
+                  className={clsx('mb-4 text-center text-2xl font-bold', {
                     [inter.className]: true,
                   })}
                 >
@@ -364,7 +364,7 @@ export default function JobPostPageContent(props: any) {
                 Мы ничего не нашли...
               </>
             )}
-          </tr>
+          </div>
         ) : null}
       </div>
     </Container>
