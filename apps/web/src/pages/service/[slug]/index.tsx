@@ -13,7 +13,6 @@ import {
   Select,
   Table,
   Text,
-  Tooltip,
   TypographyStylesProvider,
 } from '@mantine/core';
 import { upperFirst } from '@mantine/hooks';
@@ -68,7 +67,9 @@ const Modal = ({ username, props, p }) => {
             );
           });
       }
-    } catch {}
+    } catch {
+      /* empty */
+    }
   }, [userType, username]);
 
   return (
@@ -186,22 +187,7 @@ const ServicePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
           radius="xl"
         />
         <div className="ml-2 flex flex-col">
-          <h2 className="text-base font-semibold">
-            {props.user.name}
-            {props.user.verified ? (
-              <Tooltip label="Verified User" withArrow>
-                <Badge
-                  color="green"
-                  variant="light"
-                  className="ml-2 rounded-full"
-                >
-                  <div className="flex flex-row flex-nowrap items-center justify-center">
-                    <IconCheck />
-                  </div>
-                </Badge>
-              </Tooltip>
-            ) : null}
-          </h2>
+          <h2 className="text-base font-semibold">{props.user.name}</h2>
           <Text
             color={'dimmed'}
             className={clsx('leading-3', {
