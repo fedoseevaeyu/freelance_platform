@@ -263,12 +263,44 @@ const ServicePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
             ))}
           </Carousel>
         ) : null}
-        <Divider orientation="horizontal" className={clsx('my-4 w-full')} />
 
+        <Text className={'font-bold'}>О себе</Text>
+
+        <Divider orientation="horizontal" className={clsx('my-4 w-full')} />
         <TypographyStylesProvider>
           <div
             className="prose max-w-full break-all "
             dangerouslySetInnerHTML={sanitize(props.description, undefined)}
+          />
+        </TypographyStylesProvider>
+        <Divider orientation="horizontal" className={clsx('my-4 w-full')} />
+
+        <Text className={'font-bold'}>Опыт работы</Text>
+        <Divider orientation="horizontal" className={clsx('my-4 w-full')} />
+        <TypographyStylesProvider>
+          <div
+            className="prose max-w-full break-all "
+            dangerouslySetInnerHTML={sanitize(props.workExp, undefined)}
+          />
+        </TypographyStylesProvider>
+        <Divider orientation="horizontal" className={clsx('my-4 w-full')} />
+
+        <Text className={'font-bold'}>Навыки</Text>
+        <Divider orientation="horizontal" className={clsx('my-4 w-full')} />
+        <TypographyStylesProvider>
+          <div
+            className="prose max-w-full break-all "
+            dangerouslySetInnerHTML={sanitize(props.skills, undefined)}
+          />
+        </TypographyStylesProvider>
+        <Divider orientation="horizontal" className={clsx('my-4 w-full')} />
+
+        <Text className={'font-bold'}>Стеки технологий</Text>
+        <Divider orientation="horizontal" className={clsx('my-4 w-full')} />
+        <TypographyStylesProvider>
+          <div
+            className="prose max-w-full break-all "
+            dangerouslySetInnerHTML={sanitize(props.technologies, undefined)}
           />
         </TypographyStylesProvider>
       </div>
