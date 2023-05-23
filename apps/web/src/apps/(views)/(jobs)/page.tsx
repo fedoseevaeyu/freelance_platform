@@ -299,63 +299,73 @@ export default function JobPostPageContent(props: any) {
           </>
         )}
 
-        {userType !== 'Freelancer' && props.recommendServices.length > 0 ? (
-          <>
-            <Divider orientation="horizontal" className={clsx('my-4 w-full')} />
-            <Text
-              className={clsx('my-4 text-center text-2xl font-bold', {
-                [inter.className]: true,
-              })}
-            >
-              Предложенные услуги
-            </Text>
-            <div className="grid gap-[12px] md:grid-cols-3">
-              {props.recommendServices
-                .slice(
-                  recommendService > 3 ? recommendService - 3 : 0,
-                  recommendService
-                )
-                .map((post) => (
-                  <PostCard
-                    {...post}
-                    type="service"
-                    badgeLabel={post.category.name}
-                    tags={post.tags
-                      .map((e: any) => e.name)
-                      .sort((a: any, b: any) => a.length - b.length)}
-                    key={post.slug}
-                    image={
-                      post.bannerImage.includes('fallback')
-                        ? '/images/fallback.webp'
-                        : post.bannerImage
-                    }
-                  />
-                ))}
-            </div>
-            {props.recommendServices.length > recommendService && (
-              <Button
-                className="mx-auto mt-3 bg-black"
-                onClick={() => {
-                  setRecommendService((prevState) => prevState + 3);
-                }}
-              >
-                Мне ничего не подошло
-              </Button>
+        {props.user.username === username ? (
+          <tr>
+            {userType !== 'Freelancer' && props.recommendServices.length > 0 ? (
+              <>
+                <Divider
+                  orientation="horizontal"
+                  className={clsx('my-4 w-full')}
+                />
+                <Text
+                  className={clsx('my-4 text-center text-2xl font-bold', {
+                    [inter.className]: true,
+                  })}
+                >
+                  Предложенные услуги
+                </Text>
+                <div className="grid gap-[12px] md:grid-cols-3">
+                  {props.recommendServices
+                    .slice(
+                      recommendService > 3 ? recommendService - 3 : 0,
+                      recommendService
+                    )
+                    .map((post) => (
+                      <PostCard
+                        {...post}
+                        type="service"
+                        badgeLabel={post.category.name}
+                        tags={post.tags
+                          .map((e: any) => e.name)
+                          .sort((a: any, b: any) => a.length - b.length)}
+                        key={post.slug}
+                        image={
+                          post.bannerImage.includes('fallback')
+                            ? '/images/fallback.webp'
+                            : post.bannerImage
+                        }
+                      />
+                    ))}
+                </div>
+                {props.recommendServices.length > recommendService && (
+                  <Button
+                    className="mx-auto mt-3 bg-black"
+                    onClick={() => {
+                      setRecommendService((prevState) => prevState + 3);
+                    }}
+                  >
+                    Мне ничего не подошло
+                  </Button>
+                )}
+              </>
+            ) : (
+              <>
+                <Divider
+                  orientation="horizontal"
+                  className={clsx('my-4 w-full')}
+                />
+                <Text
+                  className={clsx('my-4 text-center text-2xl font-bold', {
+                    [inter.className]: true,
+                  })}
+                >
+                  Предложенные услуги
+                </Text>
+                Мы ничего не нашли...
+              </>
             )}
-          </>
-        ) : (
-          <>
-            <Divider orientation="horizontal" className={clsx('my-4 w-full')} />
-            <Text
-              className={clsx('my-4 text-center text-2xl font-bold', {
-                [inter.className]: true,
-              })}
-            >
-              Предложенные услуги
-            </Text>
-            Мы ничего не нашли...
-          </>
-        )}
+          </tr>
+        ) : null}
       </div>
     </Container>
   );
