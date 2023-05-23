@@ -183,7 +183,7 @@ export default function RegisterPageContent() {
             })}
           >
             <span className="bg-gradient-to-r from-[#3b82f6] to-[#2dd4bf] bg-clip-text text-center text-transparent">
-              Freelance Platform
+              Разрабы&Заказы
             </span>
           </Text>
 
