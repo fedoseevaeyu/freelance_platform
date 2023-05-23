@@ -389,7 +389,7 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
           <>
             <Title
               align="center"
-              className={clsx(inter.className, 'mt-2')}
+              className={clsx(inter.className, 'mt-7')}
               mb="md"
             >
               Отклики на ваши услуги
@@ -555,12 +555,16 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                     </Card>
                   ))
               ) : (
-                <>Вам ещё не предлагали сотрудничество</>
+                <div className="col-span-3 flex items-center justify-center">
+                  <Text className={clsx('mt-0 text-center')}>
+                    Вам ещё не предлагали сотрудничество
+                  </Text>
+                </div>
               )}
             </div>
             <Title
               align="center"
-              className={clsx(inter.className, 'mt-2')}
+              className={clsx(inter.className, 'mt-7')}
               mb="md"
             >
               Ваши предложения о сотрудничестве
@@ -673,14 +677,18 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                   ))}
               </div>
             ) : (
-              <>Вы ещё не предлагали сотрудничество</>
+              <div className="col-span-3 flex items-center justify-center">
+                <Text className={clsx('mt-0 text-center')}>
+                  Вы ещё не предлагали сотрудничество
+                </Text>
+              </div>
             )}
           </>
         ) : (
           <>
             <Title
               align="center"
-              className={clsx(inter.className, 'mt-2')}
+              className={clsx(inter.className, 'mt-7')}
               mb="md"
             >
               Отклики на ваши заказы
@@ -824,12 +832,16 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                     </Card>
                   ))
               ) : (
-                <>Вам ещё не предлагали сотрудничество</>
+                <div className="col-span-3 flex items-center justify-center">
+                  <Text className={clsx('mt-0 text-center')}>
+                    Вам ещё не предлагали сотрудничество
+                  </Text>
+                </div>
               )}
             </div>
             <Title
               align="center"
-              className={clsx(inter.className, 'mt-2')}
+              className={clsx(inter.className, 'mt-7')}
               mb="md"
             >
               Ваши предложения о сотрудничестве
@@ -920,7 +932,11 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                   ))}
               </div>
             ) : (
-              <>Вы ещё не предлагали сотрудничество</>
+              <div className="col-span-3 flex items-center justify-center">
+                <Text className={clsx('mt-0 text-center')}>
+                  Вы ещё не предлагали сотрудничество
+                </Text>
+              </div>
             )}
           </>
         )}

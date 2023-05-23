@@ -41,6 +41,7 @@ import { readCookie } from '../../../apps/utils/cookie';
 import { profileImageRouteGenerator } from '../../../apps/utils/profile';
 import { assetURLBuilder, URLBuilder } from '../../../apps/utils/url';
 
+// @ts-ignore
 const Modal = ({ username, props, p }) => {
   const [send, setSend] = useState(false);
   const [jobs, setJobs] = useState([]);
