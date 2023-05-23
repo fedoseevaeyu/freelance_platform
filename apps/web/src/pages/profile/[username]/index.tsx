@@ -385,509 +385,514 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
           </>
         )}
 
-        {props.role === 'Freelancer' ? (
-          <>
-            <Title
-              align="center"
-              className={clsx(inter.className, 'mt-7')}
-              mb="md"
-            >
-              Отклики на ваши услуги
-            </Title>
-            <div className="grid grid-cols-3 gap-4">
-              {props.orders.filter((e) => e.client_agree).length > 0 ? (
-                props.orders
-                  .filter((e) => e.client_agree)
-                  .map((e) => (
-                    <Card
-                      key={e.id}
-                      shadow="sm"
-                      p="lg"
-                      radius="md"
-                      withBorder
-                      className="mx-1  h-full min-h-[10rem] min-w-[300px] max-w-[350px]"
-                    >
-                      <Link
-                        className="block font-bold"
-                        href={`/job/${e.jobPost.slug}`}
-                      >
-                        {e.jobPost.title}
-                      </Link>
-                      <Tooltip label={`Статус`}>
-                        <Badge
-                          className="w-fit"
-                          color={
-                            e.status === 'Response'
-                              ? 'yellow'
-                              : e.status === 'Accepted'
-                              ? 'blue'
-                              : e.status === 'Canceled'
-                              ? 'red'
-                              : 'green'
-                          }
+        {props.username === username ? (
+          <tr>
+            {props.role === 'Freelancer' ? (
+              <>
+                <Title
+                  align="center"
+                  className={clsx(inter.className, 'mt-7')}
+                  mb="md"
+                >
+                  Отклики на ваши услуги
+                </Title>
+                <div className="grid grid-cols-3 gap-4">
+                  {props.orders.filter((e) => e.client_agree).length > 0 ? (
+                    props.orders
+                      .filter((e) => e.client_agree)
+                      .map((e) => (
+                        <Card
+                          key={e.id}
+                          shadow="sm"
+                          p="lg"
+                          radius="md"
+                          withBorder
+                          className="mx-1  h-full min-h-[10rem] min-w-[300px] max-w-[350px]"
                         >
-                          {e.status === 'Response'
-                            ? 'Предложено'
-                            : e.status === 'Accepted'
-                            ? 'Принято'
-                            : e.status === 'Canceled'
-                            ? 'Отклонено'
-                            : 'Выполнено'}
-                        </Badge>
-                      </Tooltip>
-                      <Link
-                        className="flex"
-                        href={`/profile/${e.jobPost.user.username}`}
-                      >
-                        <div className="flex flex-col">
-                          <Text
-                            size="md"
-                            className={clsx(montserrat.className, 'mb-0')}
+                          <Link
+                            className="block font-bold"
+                            href={`/job/${e.jobPost.slug}`}
                           >
-                            {e.jobPost.user.name}
-                          </Text>
+                            {e.jobPost.title}
+                          </Link>
+                          <Tooltip label={`Статус`}>
+                            <Badge
+                              className="w-fit"
+                              color={
+                                e.status === 'Response'
+                                  ? 'yellow'
+                                  : e.status === 'Accepted'
+                                  ? 'blue'
+                                  : e.status === 'Canceled'
+                                  ? 'red'
+                                  : 'green'
+                              }
+                            >
+                              {e.status === 'Response'
+                                ? 'Предложено'
+                                : e.status === 'Accepted'
+                                ? 'Принято'
+                                : e.status === 'Canceled'
+                                ? 'Отклонено'
+                                : 'Выполнено'}
+                            </Badge>
+                          </Tooltip>
+                          <Link
+                            className="flex"
+                            href={`/profile/${e.jobPost.user.username}`}
+                          >
+                            <div className="flex flex-col">
+                              <Text
+                                size="md"
+                                className={clsx(montserrat.className, 'mb-0')}
+                              >
+                                {e.jobPost.user.name}
+                              </Text>
 
-                          <Text
-                            size="xs"
-                            className={clsx(
-                              montserrat.className,
-                              'mt-0 leading-3'
-                            )}
-                          >
-                            @{e.jobPost.user.username}{' '}
-                          </Text>
-                        </div>
-                      </Link>
-                      {e.status === 'Accepted' && (
-                        <Button
-                          onClick={() => {
-                            const token = readCookie('token');
-                            axios
-                              .post(
-                                URLBuilder(`/orders/${e.id}/done`),
-                                {},
-                                {
-                                  headers: {
-                                    authorization: `Bearer ${token}`,
-                                  },
-                                }
-                              )
-                              .then(() => {
-                                window.location.reload();
-                              });
-                          }}
-                          mt="md"
-                          variant="outline"
-                          color={'green'}
-                          className={clsx(inter.className)}
-                          radius="lg"
-                        >
-                          Выполнено
-                        </Button>
-                      )}
-                      {e.status === 'Response' && (
-                        <div className="flex justify-between">
-                          <Button
-                            mt="md"
-                            variant="outline"
-                            color={'red'}
-                            className={clsx(inter.className)}
-                            onClick={() => {
-                              const token = readCookie('token');
-                              axios
-                                .post(
-                                  URLBuilder(`/orders/${e.id}/reject`),
-                                  {},
-                                  {
-                                    headers: {
-                                      authorization: `Bearer ${token}`,
-                                    },
-                                  }
-                                )
-                                .then(() => {
-                                  window.location.reload();
-                                });
-                            }}
-                            radius="lg"
-                          >
-                            Отклонить
-                          </Button>
-                          <Button
-                            onClick={() => {
-                              const token = readCookie('token');
-                              axios
-                                .post(
-                                  URLBuilder(`/orders/${e.id}/accept`),
-                                  {},
-                                  {
-                                    headers: {
-                                      authorization: `Bearer ${token}`,
-                                    },
-                                  }
-                                )
-                                .then(() => {
-                                  window.location.reload();
-                                });
-                            }}
-                            mt="md"
-                            variant="outline"
-                            color={'green'}
-                            className={clsx(inter.className)}
-                            radius="lg"
-                          >
-                            Принять
-                          </Button>
-                        </div>
-                      )}
-                    </Card>
-                  ))
-              ) : (
-                <div className="col-span-3 flex items-center justify-center">
-                  <Text className={clsx('mt-0 text-center')}>
-                    Вам ещё не предлагали сотрудничество
-                  </Text>
+                              <Text
+                                size="xs"
+                                className={clsx(
+                                  montserrat.className,
+                                  'mt-0 leading-3'
+                                )}
+                              >
+                                @{e.jobPost.user.username}{' '}
+                              </Text>
+                            </div>
+                          </Link>
+                          {e.status === 'Accepted' && (
+                            <Button
+                              onClick={() => {
+                                const token = readCookie('token');
+                                axios
+                                  .post(
+                                    URLBuilder(`/orders/${e.id}/done`),
+                                    {},
+                                    {
+                                      headers: {
+                                        authorization: `Bearer ${token}`,
+                                      },
+                                    }
+                                  )
+                                  .then(() => {
+                                    window.location.reload();
+                                  });
+                              }}
+                              mt="md"
+                              variant="outline"
+                              color={'green'}
+                              className={clsx(inter.className)}
+                              radius="lg"
+                            >
+                              Выполнено
+                            </Button>
+                          )}
+                          {e.status === 'Response' && (
+                            <div className="flex justify-between">
+                              <Button
+                                mt="md"
+                                variant="outline"
+                                color={'red'}
+                                className={clsx(inter.className)}
+                                onClick={() => {
+                                  const token = readCookie('token');
+                                  axios
+                                    .post(
+                                      URLBuilder(`/orders/${e.id}/reject`),
+                                      {},
+                                      {
+                                        headers: {
+                                          authorization: `Bearer ${token}`,
+                                        },
+                                      }
+                                    )
+                                    .then(() => {
+                                      window.location.reload();
+                                    });
+                                }}
+                                radius="lg"
+                              >
+                                Отклонить
+                              </Button>
+                              <Button
+                                onClick={() => {
+                                  const token = readCookie('token');
+                                  axios
+                                    .post(
+                                      URLBuilder(`/orders/${e.id}/accept`),
+                                      {},
+                                      {
+                                        headers: {
+                                          authorization: `Bearer ${token}`,
+                                        },
+                                      }
+                                    )
+                                    .then(() => {
+                                      window.location.reload();
+                                    });
+                                }}
+                                mt="md"
+                                variant="outline"
+                                color={'green'}
+                                className={clsx(inter.className)}
+                                radius="lg"
+                              >
+                                Принять
+                              </Button>
+                            </div>
+                          )}
+                        </Card>
+                      ))
+                  ) : (
+                    <div className="col-span-3 flex items-center justify-center">
+                      <Text className={clsx('mt-0 text-center')}>
+                        Вам ещё не предлагали сотрудничество
+                      </Text>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-            <Title
-              align="center"
-              className={clsx(inter.className, 'mt-7')}
-              mb="md"
-            >
-              Ваши предложения о сотрудничестве
-            </Title>
-            {props.orders.filter((e) => e.freelancer_agree).length > 0 ? (
-              <div className="grid grid-cols-3 gap-4">
-                {props.orders
-                  .filter((e) => e.freelancer_agree)
-                  .map((e) => (
-                    <Card
-                      key={e.id}
-                      shadow="sm"
-                      p="lg"
-                      radius="md"
-                      withBorder
-                      className="mx-1  h-full min-h-[10rem] min-w-[300px] max-w-[350px]"
-                    >
-                      <Link
-                        className="block font-bold"
-                        href={`/job/${e.jobPost.slug}`}
-                      >
-                        {e.jobPost.title}
-                      </Link>
-                      <Tooltip label={`Статус`}>
-                        <Badge
-                          className="w-fit"
-                          color={
-                            e.status === 'Response'
-                              ? 'yellow'
-                              : e.status === 'Accepted'
-                              ? 'blue'
-                              : e.status === 'Canceled'
-                              ? 'red'
-                              : 'green'
-                          }
+                <Title
+                  align="center"
+                  className={clsx(inter.className, 'mt-7')}
+                  mb="md"
+                >
+                  Ваши предложения о сотрудничестве
+                </Title>
+                {props.orders.filter((e) => e.freelancer_agree).length > 0 ? (
+                  <div className="grid grid-cols-3 gap-4">
+                    {props.orders
+                      .filter((e) => e.freelancer_agree)
+                      .map((e) => (
+                        <Card
+                          key={e.id}
+                          shadow="sm"
+                          p="lg"
+                          radius="md"
+                          withBorder
+                          className="mx-1  h-full min-h-[10rem] min-w-[300px] max-w-[350px]"
                         >
-                          {e.status === 'Response'
-                            ? 'Предложено'
-                            : e.status === 'Accepted'
-                            ? 'Принято'
-                            : e.status === 'Canceled'
-                            ? 'Отклонено'
-                            : 'Выполнено'}
-                        </Badge>
-                      </Tooltip>
-                      <Link
-                        className="mt-2 flex"
-                        href={`/profile/${e.jobPost.user.username}`}
-                      >
-                        <div className="flex flex-col">
-                          <Text
-                            size="md"
-                            className={clsx(montserrat.className, 'mb-0')}
+                          <Link
+                            className="block font-bold"
+                            href={`/job/${e.jobPost.slug}`}
                           >
-                            {e.jobPost.user.name}
-                          </Text>
+                            {e.jobPost.title}
+                          </Link>
+                          <Tooltip label={`Статус`}>
+                            <Badge
+                              className="w-fit"
+                              color={
+                                e.status === 'Response'
+                                  ? 'yellow'
+                                  : e.status === 'Accepted'
+                                  ? 'blue'
+                                  : e.status === 'Canceled'
+                                  ? 'red'
+                                  : 'green'
+                              }
+                            >
+                              {e.status === 'Response'
+                                ? 'Предложено'
+                                : e.status === 'Accepted'
+                                ? 'Принято'
+                                : e.status === 'Canceled'
+                                ? 'Отклонено'
+                                : 'Выполнено'}
+                            </Badge>
+                          </Tooltip>
+                          <Link
+                            className="mt-2 flex"
+                            href={`/profile/${e.jobPost.user.username}`}
+                          >
+                            <div className="flex flex-col">
+                              <Text
+                                size="md"
+                                className={clsx(montserrat.className, 'mb-0')}
+                              >
+                                {e.jobPost.user.name}
+                              </Text>
 
-                          <Text
-                            size="xs"
-                            className={clsx(
-                              montserrat.className,
-                              'mt-0 leading-3'
-                            )}
-                          >
-                            @{e.jobPost.user.username}{' '}
-                          </Text>
-                        </div>
-                      </Link>
-                      {e.status === 'Accepted' && (
-                        <Button
-                          onClick={() => {
-                            const token = readCookie('token');
-                            axios
-                              .post(
-                                URLBuilder(`/orders/${e.id}/done`),
-                                {},
-                                {
-                                  headers: {
-                                    authorization: `Bearer ${token}`,
-                                  },
-                                }
-                              )
-                              .then(() => {
-                                window.location.reload();
-                              });
-                          }}
-                          mt="md"
-                          variant="outline"
-                          color={'green'}
-                          className={clsx(inter.className)}
-                          radius="lg"
-                        >
-                          Выполнено
-                        </Button>
-                      )}
-                    </Card>
-                  ))}
-              </div>
+                              <Text
+                                size="xs"
+                                className={clsx(
+                                  montserrat.className,
+                                  'mt-0 leading-3'
+                                )}
+                              >
+                                @{e.jobPost.user.username}{' '}
+                              </Text>
+                            </div>
+                          </Link>
+                          {e.status === 'Accepted' && (
+                            <Button
+                              onClick={() => {
+                                const token = readCookie('token');
+                                axios
+                                  .post(
+                                    URLBuilder(`/orders/${e.id}/done`),
+                                    {},
+                                    {
+                                      headers: {
+                                        authorization: `Bearer ${token}`,
+                                      },
+                                    }
+                                  )
+                                  .then(() => {
+                                    window.location.reload();
+                                  });
+                              }}
+                              mt="md"
+                              variant="outline"
+                              color={'green'}
+                              className={clsx(inter.className)}
+                              radius="lg"
+                            >
+                              Выполнено
+                            </Button>
+                          )}
+                        </Card>
+                      ))}
+                  </div>
+                ) : (
+                  <div className="col-span-3 flex items-center justify-center">
+                    <Text className={clsx('mt-0 text-center')}>
+                      Вы ещё не предлагали сотрудничество
+                    </Text>
+                  </div>
+                )}
+              </>
             ) : (
-              <div className="col-span-3 flex items-center justify-center">
-                <Text className={clsx('mt-0 text-center')}>
-                  Вы ещё не предлагали сотрудничество
-                </Text>
-              </div>
-            )}
-          </>
-        ) : (
-          <>
-            <Title
-              align="center"
-              className={clsx(inter.className, 'mt-7')}
-              mb="md"
-            >
-              Отклики на ваши заказы
-            </Title>
-            <div className="grid grid-cols-3 gap-4">
-              {props.myOrders.filter((e) => e.freelancer_agree).length > 0 ? (
-                props.myOrders
-                  .filter((e) => e.freelancer_agree)
-                  .map((e) => (
-                    <Card
-                      key={e.id}
-                      shadow="sm"
-                      p="lg"
-                      radius="md"
-                      withBorder
-                      className="mx-1  h-full min-h-[10rem] min-w-[300px] max-w-[350px]"
-                    >
-                      <Link
-                        className="block font-bold"
-                        href={`/service/${e.service.slug}`}
-                      >
-                        {e.service.title}
-                      </Link>
-                      <Tooltip label={`Статус`}>
-                        <Badge
-                          className="w-fit"
-                          color={
-                            e.status === 'Response'
-                              ? 'yellow'
-                              : e.status === 'Accepted'
-                              ? 'blue'
-                              : e.status === 'Canceled'
-                              ? 'red'
-                              : 'green'
-                          }
+              <>
+                <Title
+                  align="center"
+                  className={clsx(inter.className, 'mt-7')}
+                  mb="md"
+                >
+                  Отклики на ваши заказы
+                </Title>
+                <div className="grid grid-cols-3 gap-4">
+                  {props.myOrders.filter((e) => e.freelancer_agree).length >
+                  0 ? (
+                    props.myOrders
+                      .filter((e) => e.freelancer_agree)
+                      .map((e) => (
+                        <Card
+                          key={e.id}
+                          shadow="sm"
+                          p="lg"
+                          radius="md"
+                          withBorder
+                          className="mx-1  h-full min-h-[10rem] min-w-[300px] max-w-[350px]"
                         >
-                          {e.status === 'Response'
-                            ? 'Предложено'
-                            : e.status === 'Accepted'
-                            ? 'Выполняется'
-                            : e.status === 'Canceled'
-                            ? 'Отклонено'
-                            : 'Выполнено'}
-                        </Badge>
-                      </Tooltip>
-                      <Link
-                        className="flex"
-                        href={`/profile/${e.service.user.username}`}
-                      >
-                        <div className="flex flex-col">
-                          <Text
-                            size="md"
-                            className={clsx(montserrat.className, 'mb-0')}
+                          <Link
+                            className="block font-bold"
+                            href={`/service/${e.service.slug}`}
                           >
-                            {e.service.user.name}
-                          </Text>
+                            {e.service.title}
+                          </Link>
+                          <Tooltip label={`Статус`}>
+                            <Badge
+                              className="w-fit"
+                              color={
+                                e.status === 'Response'
+                                  ? 'yellow'
+                                  : e.status === 'Accepted'
+                                  ? 'blue'
+                                  : e.status === 'Canceled'
+                                  ? 'red'
+                                  : 'green'
+                              }
+                            >
+                              {e.status === 'Response'
+                                ? 'Предложено'
+                                : e.status === 'Accepted'
+                                ? 'Выполняется'
+                                : e.status === 'Canceled'
+                                ? 'Отклонено'
+                                : 'Выполнено'}
+                            </Badge>
+                          </Tooltip>
+                          <Link
+                            className="flex"
+                            href={`/profile/${e.service.user.username}`}
+                          >
+                            <div className="flex flex-col">
+                              <Text
+                                size="md"
+                                className={clsx(montserrat.className, 'mb-0')}
+                              >
+                                {e.service.user.name}
+                              </Text>
 
-                          {e.status !== 'Canceled' &&
-                            e.status !== 'Response' && (
-                              <span>{e.service.user.email}</span>
-                            )}
+                              {e.status !== 'Canceled' &&
+                                e.status !== 'Response' && (
+                                  <span>{e.service.user.email}</span>
+                                )}
 
-                          <Text
-                            size="xs"
-                            className={clsx(
-                              montserrat.className,
-                              'mt-0 leading-3'
-                            )}
-                          >
-                            @{e.service.user.username}{' '}
-                          </Text>
-                        </div>
-                      </Link>
-                      {e.status === 'Response' && (
-                        <div className="flex justify-between">
-                          <Button
-                            mt="md"
-                            variant="outline"
-                            color={'red'}
-                            className={clsx(inter.className)}
-                            onClick={() => {
-                              const token = readCookie('token');
-                              axios
-                                .post(
-                                  URLBuilder(`/orders/${e.id}/reject`),
-                                  {},
-                                  {
-                                    headers: {
-                                      authorization: `Bearer ${token}`,
-                                    },
-                                  }
-                                )
-                                .then(() => {
-                                  window.location.reload();
-                                });
-                            }}
-                            radius="lg"
-                          >
-                            Отклонить
-                          </Button>
-                          <Button
-                            onClick={() => {
-                              const token = readCookie('token');
-                              axios
-                                .post(
-                                  URLBuilder(`/orders/${e.id}/accept`),
-                                  {},
-                                  {
-                                    headers: {
-                                      authorization: `Bearer ${token}`,
-                                    },
-                                  }
-                                )
-                                .then(() => {
-                                  window.location.reload();
-                                });
-                            }}
-                            mt="md"
-                            variant="outline"
-                            color={'green'}
-                            className={clsx(inter.className)}
-                            radius="lg"
-                          >
-                            Принять
-                          </Button>
-                        </div>
-                      )}
-                    </Card>
-                  ))
-              ) : (
-                <div className="col-span-3 flex items-center justify-center">
-                  <Text className={clsx('mt-0 text-center')}>
-                    Вам ещё не предлагали сотрудничество
-                  </Text>
+                              <Text
+                                size="xs"
+                                className={clsx(
+                                  montserrat.className,
+                                  'mt-0 leading-3'
+                                )}
+                              >
+                                @{e.service.user.username}{' '}
+                              </Text>
+                            </div>
+                          </Link>
+                          {e.status === 'Response' && (
+                            <div className="flex justify-between">
+                              <Button
+                                mt="md"
+                                variant="outline"
+                                color={'red'}
+                                className={clsx(inter.className)}
+                                onClick={() => {
+                                  const token = readCookie('token');
+                                  axios
+                                    .post(
+                                      URLBuilder(`/orders/${e.id}/reject`),
+                                      {},
+                                      {
+                                        headers: {
+                                          authorization: `Bearer ${token}`,
+                                        },
+                                      }
+                                    )
+                                    .then(() => {
+                                      window.location.reload();
+                                    });
+                                }}
+                                radius="lg"
+                              >
+                                Отклонить
+                              </Button>
+                              <Button
+                                onClick={() => {
+                                  const token = readCookie('token');
+                                  axios
+                                    .post(
+                                      URLBuilder(`/orders/${e.id}/accept`),
+                                      {},
+                                      {
+                                        headers: {
+                                          authorization: `Bearer ${token}`,
+                                        },
+                                      }
+                                    )
+                                    .then(() => {
+                                      window.location.reload();
+                                    });
+                                }}
+                                mt="md"
+                                variant="outline"
+                                color={'green'}
+                                className={clsx(inter.className)}
+                                radius="lg"
+                              >
+                                Принять
+                              </Button>
+                            </div>
+                          )}
+                        </Card>
+                      ))
+                  ) : (
+                    <div className="col-span-3 flex items-center justify-center">
+                      <Text className={clsx('mt-0 text-center')}>
+                        Вам ещё не предлагали сотрудничество
+                      </Text>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-            <Title
-              align="center"
-              className={clsx(inter.className, 'mt-7')}
-              mb="md"
-            >
-              Ваши предложения о сотрудничестве
-            </Title>
-            {props.myOrders.filter((e) => e.client_agree).length > 0 ? (
-              <div className="grid grid-cols-3 gap-4">
-                {props.myOrders
-                  .filter((e) => e.client_agree)
-                  .map((e) => (
-                    <Card
-                      key={e.id}
-                      shadow="sm"
-                      p="lg"
-                      radius="md"
-                      withBorder
-                      className="mx-1  h-full min-h-[10rem] min-w-[300px] max-w-[350px]"
-                    >
-                      <Link
-                        className="block font-bold"
-                        href={`/service/${e.service.slug}`}
-                      >
-                        {e.service.title}
-                      </Link>
-                      <Tooltip label={`Статус`}>
-                        <Badge
-                          className="w-fit"
-                          color={
-                            e.status === 'Response'
-                              ? 'yellow'
-                              : e.status === 'Accepted'
-                              ? 'blue'
-                              : e.status === 'Canceled'
-                              ? 'red'
-                              : 'green'
-                          }
+                <Title
+                  align="center"
+                  className={clsx(inter.className, 'mt-7')}
+                  mb="md"
+                >
+                  Ваши предложения о сотрудничестве
+                </Title>
+                {props.myOrders.filter((e) => e.client_agree).length > 0 ? (
+                  <div className="grid grid-cols-3 gap-4">
+                    {props.myOrders
+                      .filter((e) => e.client_agree)
+                      .map((e) => (
+                        <Card
+                          key={e.id}
+                          shadow="sm"
+                          p="lg"
+                          radius="md"
+                          withBorder
+                          className="mx-1  h-full min-h-[10rem] min-w-[300px] max-w-[350px]"
                         >
-                          {e.status === 'Response'
-                            ? 'Предложено'
-                            : e.status === 'Accepted'
-                            ? 'Выполняется'
-                            : e.status === 'Canceled'
-                            ? 'Отклонено'
-                            : 'Выполнено'}
-                        </Badge>
-                      </Tooltip>
-                      <Link
-                        className="flex"
-                        href={`/profile/${e.service.user.username}`}
-                      >
-                        <div className="flex flex-col">
-                          <Text
-                            size="md"
-                            className={clsx(montserrat.className, 'mb-0')}
+                          <Link
+                            className="block font-bold"
+                            href={`/service/${e.service.slug}`}
                           >
-                            {e.service.user.name}
-                          </Text>
-
-                          {e.status !== 'Canceled' &&
-                            e.status !== 'Response' && (
-                              <span>{e.service.user.email}</span>
-                            )}
-
-                          <Text
-                            size="xs"
-                            className={clsx(
-                              montserrat.className,
-                              'mt-0 leading-3'
-                            )}
+                            {e.service.title}
+                          </Link>
+                          <Tooltip label={`Статус`}>
+                            <Badge
+                              className="w-fit"
+                              color={
+                                e.status === 'Response'
+                                  ? 'yellow'
+                                  : e.status === 'Accepted'
+                                  ? 'blue'
+                                  : e.status === 'Canceled'
+                                  ? 'red'
+                                  : 'green'
+                              }
+                            >
+                              {e.status === 'Response'
+                                ? 'Предложено'
+                                : e.status === 'Accepted'
+                                ? 'Выполняется'
+                                : e.status === 'Canceled'
+                                ? 'Отклонено'
+                                : 'Выполнено'}
+                            </Badge>
+                          </Tooltip>
+                          <Link
+                            className="flex"
+                            href={`/profile/${e.service.user.username}`}
                           >
-                            @{e.service.user.username}{' '}
-                          </Text>
-                        </div>
-                      </Link>
-                    </Card>
-                  ))}
-              </div>
-            ) : (
-              <div className="col-span-3 flex items-center justify-center">
-                <Text className={clsx('mt-0 text-center')}>
-                  Вы ещё не предлагали сотрудничество
-                </Text>
-              </div>
+                            <div className="flex flex-col">
+                              <Text
+                                size="md"
+                                className={clsx(montserrat.className, 'mb-0')}
+                              >
+                                {e.service.user.name}
+                              </Text>
+
+                              {e.status !== 'Canceled' &&
+                                e.status !== 'Response' && (
+                                  <span>{e.service.user.email}</span>
+                                )}
+
+                              <Text
+                                size="xs"
+                                className={clsx(
+                                  montserrat.className,
+                                  'mt-0 leading-3'
+                                )}
+                              >
+                                @{e.service.user.username}{' '}
+                              </Text>
+                            </div>
+                          </Link>
+                        </Card>
+                      ))}
+                  </div>
+                ) : (
+                  <div className="col-span-3 flex items-center justify-center">
+                    <Text className={clsx('mt-0 text-center')}>
+                      Вы ещё не предлагали сотрудничество
+                    </Text>
+                  </div>
+                )}
+              </>
             )}
-          </>
-        )}
+          </tr>
+        ) : null}
       </Container>
     </div>
   );
