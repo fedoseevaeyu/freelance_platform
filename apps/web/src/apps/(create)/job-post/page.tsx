@@ -209,7 +209,7 @@ function CreateJobPostPageContent() {
                         required
                         id="description"
                         labelString="Описание"
-                        placeholder="Введите описание заказа"
+                        placeholder="Расскажите о целях и задачах, кого конкретно ищите для выполнения заказа"
                         labelProps={{
                           className: clsx({
                             [inter.className]: true,
@@ -224,13 +224,9 @@ function CreateJobPostPageContent() {
                         wordsComponent={
                           <div className="flex flex-col">
                             <span
-                              className={clsx('my-2 ml-auto pr-3 text-sm', {
-                                'text-[#6c757d]':
-                                  formState.values.description.length < 100,
-                                'text-[#28a745]':
-                                  formState.values.description.length >= 100 &&
-                                  formState.values.description.length < 1000,
-                              })}
+                              className={clsx(
+                                'my-2 ml-auto pr-3 text-sm text-[#6c757d]'
+                              )}
                             >
                               {formState.values.description.length}/1000
                             </span>
