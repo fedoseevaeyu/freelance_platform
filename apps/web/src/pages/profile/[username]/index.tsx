@@ -439,19 +439,6 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                         className="flex"
                         href={`/profile/${e.jobPost.user.username}`}
                       >
-                        <div>
-                          <Avatar
-                            size="md"
-                            src={
-                              e.jobPost.user.avatarUrl
-                                ? assetURLBuilder(e.jobPost.user.avatarUrl)
-                                : profileImageRouteGenerator(
-                                    e.jobPost.user.username
-                                  )
-                            }
-                            radius="xl"
-                          />
-                        </div>
                         <div className="flex flex-col">
                           <Text
                             size="md"
@@ -611,22 +598,9 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                         </Badge>
                       </Tooltip>
                       <Link
-                        className="flex"
+                        className="mt-2 flex"
                         href={`/profile/${e.jobPost.user.username}`}
                       >
-                        <div>
-                          <Avatar
-                            size="md"
-                            src={
-                              e.jobPost.user.avatarUrl
-                                ? assetURLBuilder(e.jobPost.user.avatarUrl)
-                                : profileImageRouteGenerator(
-                                    e.jobPost.user.username
-                                  )
-                            }
-                            radius="xl"
-                          />
-                        </div>
                         <div className="flex flex-col">
                           <Text
                             size="md"
@@ -738,19 +712,6 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                         className="flex"
                         href={`/profile/${e.service.user.username}`}
                       >
-                        <div>
-                          <Avatar
-                            size="md"
-                            src={
-                              e.service.user.avatarUrl
-                                ? assetURLBuilder(e.service.user.avatarUrl)
-                                : profileImageRouteGenerator(
-                                    e.service.user.username
-                                  )
-                            }
-                            radius="xl"
-                          />
-                        </div>
                         <div className="flex flex-col">
                           <Text
                             size="md"
@@ -891,19 +852,6 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                         className="flex"
                         href={`/profile/${e.service.user.username}`}
                       >
-                        <div>
-                          <Avatar
-                            size="md"
-                            src={
-                              e.service.user.avatarUrl
-                                ? assetURLBuilder(e.service.user.avatarUrl)
-                                : profileImageRouteGenerator(
-                                    e.service.user.username
-                                  )
-                            }
-                            radius="xl"
-                          />
-                        </div>
                         <div className="flex flex-col">
                           <Text
                             size="md"
