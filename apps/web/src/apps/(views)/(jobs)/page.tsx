@@ -11,7 +11,6 @@ import {
   Text,
   Tooltip,
 } from '@mantine/core';
-import { IconCheck } from '@tabler/icons-react';
 import axios from 'axios';
 import clsx from 'clsx';
 import Link from 'next/link';
@@ -175,22 +174,7 @@ export default function JobPostPageContent(props: any) {
               })}
             >
               <div className="flex flex-col gap-2">
-                <h2 className="text-base font-semibold">
-                  {props.user.name}
-                  {props.user.verified && (
-                    <Tooltip label="Подтвержденный пользователь" withArrow>
-                      <Badge
-                        color="green"
-                        variant="light"
-                        className="ml-2 rounded-full"
-                      >
-                        <div className="flex flex-row flex-nowrap items-center justify-center">
-                          <IconCheck color="green" size={15} />
-                        </div>
-                      </Badge>
-                    </Tooltip>
-                  )}
-                </h2>
+                <h2 className="text-base font-semibold">{props.user.name}</h2>
                 <Link
                   href={routes.profile(props.user.username)}
                   target="_blank"
