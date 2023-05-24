@@ -424,6 +424,17 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                               >
                                 @{e.jobPost.user.username}{' '}
                               </Text>
+                              <Text
+                                size="xs"
+                                className={clsx(
+                                  montserrat.className,
+                                  'mt-1 leading-3'
+                                )}
+                              >
+                                {e.status === 'Accepted' && (
+                                  <span>{e.jobPost.user.email}</span>
+                                )}
+                              </Text>
                             </div>
                           </Group>
 
@@ -602,6 +613,18 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                               >
                                 @{e.jobPost.user.username}{' '}
                               </Text>
+
+                              <Text
+                                size="xs"
+                                className={clsx(
+                                  montserrat.className,
+                                  'mt-1 leading-3'
+                                )}
+                              >
+                                {e.status === 'Accepted' && (
+                                  <span>{e.jobPost.user.email}</span>
+                                )}
+                              </Text>
                             </div>
                           </Group>
                           <Link
@@ -634,31 +657,33 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                           </Tooltip>
 
                           {e.status === 'Accepted' && (
-                            <Button
-                              onClick={() => {
-                                const token = readCookie('token');
-                                axios
-                                  .post(
-                                    URLBuilder(`/orders/${e.id}/done`),
-                                    {},
-                                    {
-                                      headers: {
-                                        authorization: `Bearer ${token}`,
-                                      },
-                                    }
-                                  )
-                                  .then(() => {
-                                    window.location.reload();
-                                  });
-                              }}
-                              mt="md"
-                              variant="outline"
-                              color={'green'}
-                              className={clsx(inter.className)}
-                              radius="lg"
-                            >
-                              Выполнено
-                            </Button>
+                            <div className="flex justify-between">
+                              <Button
+                                onClick={() => {
+                                  const token = readCookie('token');
+                                  axios
+                                    .post(
+                                      URLBuilder(`/orders/${e.id}/done`),
+                                      {},
+                                      {
+                                        headers: {
+                                          authorization: `Bearer ${token}`,
+                                        },
+                                      }
+                                    )
+                                    .then(() => {
+                                      window.location.reload();
+                                    });
+                                }}
+                                mt="md"
+                                variant="outline"
+                                color={'green'}
+                                className={clsx(inter.className)}
+                                radius="lg"
+                              >
+                                Выполнено
+                              </Button>
+                            </div>
                           )}
                         </Card>
                       ))}
@@ -724,6 +749,17 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                                 )}
                               >
                                 @{e.service.user.username}{' '}
+                              </Text>
+                              <Text
+                                size="xs"
+                                className={clsx(
+                                  montserrat.className,
+                                  'mt-1 leading-3'
+                                )}
+                              >
+                                {e.status === 'Accepted' && (
+                                  <span>{e.service.user.email}</span>
+                                )}
                               </Text>
                             </div>
                           </Group>
@@ -881,6 +917,17 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                                 )}
                               >
                                 @{e.service.user.username}{' '}
+                              </Text>
+                              <Text
+                                size="xs"
+                                className={clsx(
+                                  montserrat.className,
+                                  'mt-1 leading-3'
+                                )}
+                              >
+                                {e.status === 'Accepted' && (
+                                  <span>{e.service.user.email}</span>
+                                )}
                               </Text>
                             </div>
                           </Group>
