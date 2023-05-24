@@ -558,7 +558,7 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                   Ваши предложения заказчикам
                 </Title>
                 {props.orders.filter((e) => e.freelancer_agree).length > 0 ? (
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                     <LoadingOverlay visible={isLoading} overlayBlur={2} />
                     {props.orders
                       .filter((e) => e.freelancer_agree)
