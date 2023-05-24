@@ -370,11 +370,11 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
         )}
 
         {props.username === username ? (
-          <tr>
+          <div className={clsx('text-center')}>
             {props.role === 'Freelancer' ? (
               <>
                 <Title
-                  align="center"
+                  // align="center"
                   className={clsx(inter.className, 'mt-7')}
                   mb="md"
                 >
@@ -875,7 +875,7 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                 )}
               </>
             )}
-          </tr>
+          </div>
         ) : null}
       </Container>
     </div>
