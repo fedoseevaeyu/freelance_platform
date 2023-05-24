@@ -540,7 +540,7 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                   className={clsx(inter.className, 'mt-7')}
                   mb="md"
                 >
-                  Ваши предложения о сотрудничестве
+                  Ваши предложения заказчикам
                 </Title>
                 {props.orders.filter((e) => e.freelancer_agree).length > 0 ? (
                   <div className="grid grid-cols-3 gap-4">
@@ -587,7 +587,7 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                             className="mt-2 flex"
                             href={`/profile/${e.jobPost.user.username}`}
                           >
-                            <div className="flex flex-col">
+                            <div className="flex w-full flex-col items-center justify-center">
                               <Text
                                 size="md"
                                 className={clsx(montserrat.className, 'mb-0')}
@@ -793,7 +793,7 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                   className={clsx(inter.className, 'mt-7')}
                   mb="md"
                 >
-                  Ваши предложения о сотрудничестве
+                  Ваши предложения разработчикам
                 </Title>
                 {props.myOrders.filter((e) => e.client_agree).length > 0 ? (
                   <div className="grid grid-cols-3 gap-4">
@@ -837,10 +837,10 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                             </Badge>
                           </Tooltip>
                           <Link
-                            className="flex"
+                            className="mt-2 flex"
                             href={`/profile/${e.service.user.username}`}
                           >
-                            <div className="flex flex-col">
+                            <div className="flex w-full flex-col items-center justify-center">
                               <Text
                                 size="md"
                                 className={clsx(montserrat.className, 'mb-0')}
