@@ -296,7 +296,7 @@ export default function JobPostPageContent(props: any) {
                     [inter.className]: true,
                   })}
                 >
-                  Предложенные услуги
+                  Рекомендованные услуги
                 </Text>
                 <div className="grid gap-[12px] md:grid-cols-3">
                   {props.recommendServices
@@ -343,7 +343,7 @@ export default function JobPostPageContent(props: any) {
                     [inter.className]: true,
                   })}
                 >
-                  Предложенные услуги
+                  Рекомендованные услуги
                 </Text>
                 Мы ничего не нашли...
               </>
