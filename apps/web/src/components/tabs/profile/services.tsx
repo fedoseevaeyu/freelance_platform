@@ -81,7 +81,7 @@ const ServicesTab = ({ username }: Props) => {
     getNextPageParam: (lastPage) => lastPage.next,
   });
   return (
-    <div className={clsx('container')}>
+    <div>
       <LoadingOverlay visible={isLoading} overlayBlur={2} />
       {data?.pages.map((page, index) => (
         <SimpleGrid

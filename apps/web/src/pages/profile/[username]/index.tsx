@@ -9,6 +9,7 @@ import {
   Badge,
   Button,
   Card,
+  Divider,
   FileButton,
   Group,
   LoadingOverlay,
@@ -387,11 +388,11 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                       .map((e) => (
                         <Card
                           key={e.id}
-                          shadow="sm"
-                          p="lg"
+                          shadow="md"
+                          // p="lg"
                           radius="md"
                           withBorder
-                          className="mx-1  h-full min-h-[10rem] min-w-[300px] max-w-[350px]"
+                          // className="mx-1  h-full min-h-[10rem] min-w-[300px] max-w-[350px]"
                         >
                           <Link
                             className="block font-bold"
@@ -556,14 +557,37 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                           className="mx-1  h-full min-h-[10rem] min-w-[300px] max-w-[350px]"
                         >
                           <Link
-                            className="block font-bold"
+                            className="flex"
+                            href={`/profile/${e.jobPost.user.username}`}
+                          >
+                            <div className="flex w-full flex-col items-center justify-center">
+                              <Text
+                                size="md"
+                                className={clsx(montserrat.className, 'mb-0')}
+                              >
+                                {e.jobPost.user.name}
+                              </Text>
+                              <Text
+                                size="xs"
+                                className={clsx(
+                                  montserrat.className,
+                                  'mt-0 leading-3'
+                                )}
+                              >
+                                @{e.jobPost.user.username}{' '}
+                              </Text>
+                            </div>
+                          </Link>
+                          <Link
+                            className="mt-2 block"
                             href={`/job/${e.jobPost.slug}`}
                           >
                             {e.jobPost.title}
                           </Link>
+                          <Divider className="mt-2" />
                           <Tooltip label={`Статус`}>
                             <Badge
-                              className="w-fit"
+                              className="mt-2 w-fit"
                               color={
                                 e.status === 'Response'
                                   ? 'yellow'
@@ -583,29 +607,7 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                                 : 'Выполнено'}
                             </Badge>
                           </Tooltip>
-                          <Link
-                            className="mt-2 flex"
-                            href={`/profile/${e.jobPost.user.username}`}
-                          >
-                            <div className="flex w-full flex-col items-center justify-center">
-                              <Text
-                                size="md"
-                                className={clsx(montserrat.className, 'mb-0')}
-                              >
-                                {e.jobPost.user.name}
-                              </Text>
 
-                              <Text
-                                size="xs"
-                                className={clsx(
-                                  montserrat.className,
-                                  'mt-0 leading-3'
-                                )}
-                              >
-                                @{e.jobPost.user.username}{' '}
-                              </Text>
-                            </div>
-                          </Link>
                           {e.status === 'Accepted' && (
                             <Button
                               onClick={() => {
