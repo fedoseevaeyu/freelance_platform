@@ -9,7 +9,6 @@ import {
   Badge,
   Button,
   Card,
-  Divider,
   FileButton,
   Group,
   LoadingOverlay,
@@ -301,7 +300,7 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
           style={{
             flex: 0.3,
           }}
-          className="mt-[-50px] lg:min-w-[50%]"
+          className="mt-[-50px] lg:min-w-[61%]"
         >
           <div className="flex flex-col items-center justify-center">
             <Avatar
@@ -371,12 +370,12 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
         )}
 
         {props.username === username ? (
-          <div className={clsx('text-center')}>
+          <div className={clsx('')}>
             {props.role === 'Freelancer' ? (
               <>
                 <Title
                   // align="center"
-                  className={clsx(inter.className, 'mt-7')}
+                  className={clsx(inter.className, 'mt-7 text-center')}
                   mb="md"
                 >
                   Отклики на ваши услуги
@@ -394,15 +393,50 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                           withBorder
                           // className="mx-1  h-full min-h-[10rem] min-w-[300px] max-w-[350px]"
                         >
+                          <Group position="left">
+                            <div>
+                              <Avatar
+                                size="md"
+                                src={
+                                  e.jobPost.user.avatarUrl
+                                    ? assetURLBuilder(e.jobPost.user.avatarUrl)
+                                    : profileImageRouteGenerator(
+                                        e.jobPost.user.username
+                                      )
+                                }
+                                radius="xl"
+                              />
+                            </div>
+                            <div className="flex flex-col">
+                              <Text
+                                size="md"
+                                className={clsx(montserrat.className, 'mb-0')}
+                              >
+                                {e.jobPost.user.name}
+                              </Text>
+
+                              <Text
+                                size="xs"
+                                className={clsx(
+                                  montserrat.className,
+                                  'mt-0 leading-3'
+                                )}
+                              >
+                                @{e.jobPost.user.username}{' '}
+                              </Text>
+                            </div>
+                          </Group>
+
                           <Link
-                            className="block font-bold"
+                            className="mt-5 block"
                             href={`/job/${e.jobPost.slug}`}
                           >
                             {e.jobPost.title}
                           </Link>
+
                           <Tooltip label={`Статус`}>
                             <Badge
-                              className="w-fit"
+                              className="mt-2 w-fit"
                               color={
                                 e.status === 'Response'
                                   ? 'yellow'
@@ -422,55 +456,35 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                                 : 'Выполнено'}
                             </Badge>
                           </Tooltip>
-                          <Link
-                            className="flex"
-                            href={`/profile/${e.jobPost.user.username}`}
-                          >
-                            <div className="flex flex-col">
-                              <Text
-                                size="md"
-                                className={clsx(montserrat.className, 'mb-0')}
-                              >
-                                {e.jobPost.user.name}
-                              </Text>
 
-                              <Text
-                                size="xs"
-                                className={clsx(
-                                  montserrat.className,
-                                  'mt-0 leading-3'
-                                )}
-                              >
-                                @{e.jobPost.user.username}{' '}
-                              </Text>
-                            </div>
-                          </Link>
                           {e.status === 'Accepted' && (
-                            <Button
-                              onClick={() => {
-                                const token = readCookie('token');
-                                axios
-                                  .post(
-                                    URLBuilder(`/orders/${e.id}/done`),
-                                    {},
-                                    {
-                                      headers: {
-                                        authorization: `Bearer ${token}`,
-                                      },
-                                    }
-                                  )
-                                  .then(() => {
-                                    window.location.reload();
-                                  });
-                              }}
-                              mt="md"
-                              variant="outline"
-                              color={'green'}
-                              className={clsx(inter.className)}
-                              radius="lg"
-                            >
-                              Выполнено
-                            </Button>
+                            <div className="flex justify-between">
+                              <Button
+                                onClick={() => {
+                                  const token = readCookie('token');
+                                  axios
+                                    .post(
+                                      URLBuilder(`/orders/${e.id}/done`),
+                                      {},
+                                      {
+                                        headers: {
+                                          authorization: `Bearer ${token}`,
+                                        },
+                                      }
+                                    )
+                                    .then(() => {
+                                      window.location.reload();
+                                    });
+                                }}
+                                mt="md"
+                                variant="outline"
+                                color={'green'}
+                                className={clsx(inter.className)}
+                                radius="lg"
+                              >
+                                Выполнено
+                              </Button>
+                            </div>
                           )}
                           {e.status === 'Response' && (
                             <div className="flex justify-between">
@@ -545,6 +559,7 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                 </Title>
                 {props.orders.filter((e) => e.freelancer_agree).length > 0 ? (
                   <div className="grid grid-cols-3 gap-4">
+                    <LoadingOverlay visible={isLoading} overlayBlur={2} />
                     {props.orders
                       .filter((e) => e.freelancer_agree)
                       .map((e) => (
@@ -556,17 +571,28 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                           withBorder
                           className="mx-1  h-full min-h-[10rem] min-w-[300px] max-w-[350px]"
                         >
-                          <Link
-                            className="flex"
-                            href={`/profile/${e.jobPost.user.username}`}
-                          >
-                            <div className="flex w-full flex-col items-center justify-center">
+                          <Group position="left">
+                            <div>
+                              <Avatar
+                                size="md"
+                                src={
+                                  e.jobPost.user.avatarUrl
+                                    ? assetURLBuilder(e.jobPost.user.avatarUrl)
+                                    : profileImageRouteGenerator(
+                                        e.jobPost.user.username
+                                      )
+                                }
+                                radius="xl"
+                              />
+                            </div>
+                            <div className="flex flex-col">
                               <Text
                                 size="md"
                                 className={clsx(montserrat.className, 'mb-0')}
                               >
                                 {e.jobPost.user.name}
                               </Text>
+
                               <Text
                                 size="xs"
                                 className={clsx(
@@ -577,17 +603,16 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                                 @{e.jobPost.user.username}{' '}
                               </Text>
                             </div>
-                          </Link>
+                          </Group>
                           <Link
-                            className="mt-2 block"
+                            className="mt-5 block text-left"
                             href={`/job/${e.jobPost.slug}`}
                           >
                             {e.jobPost.title}
                           </Link>
-                          <Divider className="mt-2" />
                           <Tooltip label={`Статус`}>
                             <Badge
-                              className="mt-2 w-fit"
+                              className="mt-3 w-fit"
                               color={
                                 e.status === 'Response'
                                   ? 'yellow'
