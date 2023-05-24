@@ -380,7 +380,7 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                 >
                   Отклики на ваши услуги
                 </Title>
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                   {props.orders.filter((e) => e.client_agree).length > 0 ? (
                     props.orders
                       .filter((e) => e.client_agree)
@@ -689,21 +689,64 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                         <Card
                           key={e.id}
                           shadow="sm"
-                          p="lg"
+                          // p="lg"
                           radius="md"
                           withBorder
-                          className="mx-1  h-full min-h-[10rem] min-w-[300px] max-w-[350px]"
+                          // className="mx-1  h-full min-h-[10rem] min-w-[300px] max-w-[350px]"
                         >
+                          <Group position="left">
+                            <div>
+                              <Avatar
+                                size="md"
+                                src={
+                                  e.jobPost.user.avatarUrl
+                                    ? assetURLBuilder(e.service.user.avatarUrl)
+                                    : profileImageRouteGenerator(
+                                        e.service.user.username
+                                      )
+                                }
+                                radius="xl"
+                              />
+                            </div>
+                            <div className="flex flex-col">
+                              <Text
+                                size="md"
+                                className={clsx(montserrat.className, 'mb-0')}
+                              >
+                                {e.service.user.name}
+                              </Text>
+
+                              <Text
+                                size="xs"
+                                className={clsx(
+                                  montserrat.className,
+                                  'mt-0 leading-3'
+                                )}
+                              >
+                                @{e.service.user.username}{' '}
+                              </Text>
+                            </div>
+                          </Group>
+                          <div className="mt-5"></div>
+                          <Text className="inline">Для заказа&nbsp;</Text>
                           <Link
-                            className="block"
+                            className="hover:underline"
+                            href={`/job/${e.jobPost.slug}`}
+                          >
+                            &laquo;{e.jobPost.title}&raquo;
+                          </Link>
+                          <Text className="mt-5 inline">
+                            &nbsp;вам предложили услугу&nbsp;
+                          </Text>
+                          <Link
+                            className="hover:underline"
                             href={`/service/${e.service.slug}`}
                           >
-                            <strong>Услуга:</strong> {e.service.title}
-                            <br /> <strong>Заказ:</strong> {e.jobPost.title}
+                            &laquo;{e.service.title}&raquo;
                           </Link>
                           <Tooltip label={`Статус`}>
                             <Badge
-                              className="w-fit"
+                              className="mt-2 w-fit"
                               color={
                                 e.status === 'Response'
                                   ? 'yellow'
@@ -723,34 +766,6 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                                 : 'Выполнено'}
                             </Badge>
                           </Tooltip>
-                          <Link
-                            className="flex"
-                            href={`/profile/${e.service.user.username}`}
-                          >
-                            <div className="flex w-full flex-col items-center text-center">
-                              <Text
-                                size="md"
-                                className={clsx(montserrat.className, 'mb-0')}
-                              >
-                                {e.service.user.name}
-                              </Text>
-
-                              {e.status !== 'Canceled' &&
-                                e.status !== 'Response' && (
-                                  <span>{e.service.user.email}</span>
-                                )}
-
-                              <Text
-                                size="xs"
-                                className={clsx(
-                                  montserrat.className,
-                                  'mt-1 leading-3'
-                                )}
-                              >
-                                @{e.service.user.username}{' '}
-                              </Text>
-                            </div>
-                          </Link>
                           {e.status === 'Response' && (
                             <div className="flex justify-between">
                               <Button
@@ -823,7 +838,8 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                   Ваши предложения разработчикам
                 </Title>
                 {props.myOrders.filter((e) => e.client_agree).length > 0 ? (
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    <LoadingOverlay visible={isLoading} overlayBlur={2} />
                     {props.myOrders
                       .filter((e) => e.client_agree)
                       .map((e) => (
@@ -835,15 +851,48 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                           withBorder
                           className="mx-1  h-full min-h-[10rem] min-w-[300px] max-w-[350px]"
                         >
+                          <Group position="left">
+                            <div>
+                              <Avatar
+                                size="md"
+                                src={
+                                  e.service.user.avatarUrl
+                                    ? assetURLBuilder(e.service.user.avatarUrl)
+                                    : profileImageRouteGenerator(
+                                        e.service.user.username
+                                      )
+                                }
+                                radius="xl"
+                              />
+                            </div>
+                            <div className="flex flex-col">
+                              <Text
+                                size="md"
+                                className={clsx(montserrat.className, 'mb-0')}
+                              >
+                                {e.service.user.name}
+                              </Text>
+
+                              <Text
+                                size="xs"
+                                className={clsx(
+                                  montserrat.className,
+                                  'mt-0 leading-3'
+                                )}
+                              >
+                                @{e.service.user.username}{' '}
+                              </Text>
+                            </div>
+                          </Group>
                           <Link
-                            className="block font-bold"
+                            className="mt-5 block text-left"
                             href={`/service/${e.service.slug}`}
                           >
                             {e.service.title}
                           </Link>
                           <Tooltip label={`Статус`}>
                             <Badge
-                              className="w-fit"
+                              className="mt-3 w-fit"
                               color={
                                 e.status === 'Response'
                                   ? 'yellow'
@@ -863,34 +912,6 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                                 : 'Выполнено'}
                             </Badge>
                           </Tooltip>
-                          <Link
-                            className="mt-2 flex"
-                            href={`/profile/${e.service.user.username}`}
-                          >
-                            <div className="flex w-full flex-col items-center justify-center">
-                              <Text
-                                size="md"
-                                className={clsx(montserrat.className, 'mb-0')}
-                              >
-                                {e.service.user.name}
-                              </Text>
-
-                              {e.status !== 'Canceled' &&
-                                e.status !== 'Response' && (
-                                  <span>{e.service.user.email}</span>
-                                )}
-
-                              <Text
-                                size="xs"
-                                className={clsx(
-                                  montserrat.className,
-                                  'mt-0 leading-3'
-                                )}
-                              >
-                                @{e.service.user.username}{' '}
-                              </Text>
-                            </div>
-                          </Link>
                         </Card>
                       ))}
                   </div>
