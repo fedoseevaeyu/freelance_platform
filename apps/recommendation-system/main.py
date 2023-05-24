@@ -158,7 +158,7 @@ async def get_recommendations() -> Dict:
     # Для каждой услуги три наиболее подходящих заказа
     for i, service in enumerate(services):
         similarity_scores = cosine_similarities[i, len(services):]
-        top_job_indices = np.where(similarity_scores > 0.5)[0]  # Фильтрация по коэффициенту схожести
+        top_job_indices = np.where(similarity_scores > 0.65)[0]  # Фильтрация по коэффициенту схожести
         top_jobs = [job_posts[j] for j in top_job_indices]
         recommendations['services'].append({
             'service': service,
@@ -168,7 +168,7 @@ async def get_recommendations() -> Dict:
     # Для каждого заказа три наиболее подходящих услуги
     for i, job in enumerate(job_posts):
         similarity_scores = cosine_similarities[i + len(services), :len(services)]
-        top_service_indices = np.where(similarity_scores > 0.5)[0]  # Фильтрация по коэффициенту схожести
+        top_service_indices = np.where(similarity_scores > 0.65)[0]  # Фильтрация по коэффициенту схожести
         top_services = [services[j] for j in top_service_indices]
         recommendations['orders'].append({
             'order': job,
