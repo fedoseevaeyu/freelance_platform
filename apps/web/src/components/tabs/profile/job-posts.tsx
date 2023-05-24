@@ -116,7 +116,7 @@ const JobPosts = ({ username }: Props) => {
               <Group p="md">
                 <Link
                   href={`/job/${post.slug}`}
-                  className="truncate hover:underline"
+                  style={{ overflowWrap: 'break-word' }}
                 >
                   {post.title}
                 </Link>
@@ -128,15 +128,12 @@ const JobPosts = ({ username }: Props) => {
                     <div className="flex flex-col p-2 ">
                       <Text size="xs" className={clsx(montserrat.className)}>
                         {post.tags.map((tag) => (
-                          <Badge
-                            key={tag.id}
-                            className="m-1 bg-yellow-400 capitalize"
-                          >
-                            <Link href={`/t/${tag.slug}`}>
+                          <Badge key={tag.id} className="m-1 capitalize">
+                            <Text>
                               <span className="text-xs text-black">
                                 # {tag.name}{' '}
                               </span>
-                            </Link>
+                            </Text>
                           </Badge>
                         ))}
                       </Text>

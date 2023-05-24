@@ -1,6 +1,7 @@
 import { inter, montserrat } from '@fonts';
 import {
   Avatar,
+  Badge,
   Button,
   Divider,
   Group,
@@ -10,13 +11,11 @@ import {
   SimpleGrid,
   Text,
 } from '@mantine/core';
-import { IconStar } from '@tabler/icons-react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import Link from 'next/link';
-import { Fragment } from 'react';
 import type { IOptions } from 'sanitize-html';
 import sanitizeHtml from 'sanitize-html';
 
@@ -141,41 +140,24 @@ const ServicesTab = ({ username }: Props) => {
               <Group mt="sm" className="mb-auto w-full" p="md">
                 <Link
                   href={`/service/${service.slug}`}
-                  className="truncate hover:underline"
+                  style={{ overflowWrap: 'break-word' }}
                 >
                   {service.title}
                 </Link>
               </Group>
-              <Divider className="mt-auto" />
+              <Divider />
               <Group position="apart">
-                <div className="flex flex-col">
+                <div className="flex flex-col p-2 ">
                   <Text size="xs" className={clsx(montserrat.className)}>
                     {service.tags.map((tag) => (
-                      <Fragment key={tag.id}>
-                        <span className="text-gray-500"># {tag.name} </span>
-                      </Fragment>
+                      <Badge key={tag.id} className="m-1 capitalize">
+                        <Text>
+                          <span className="text-xs text-black">
+                            # {tag.name}{' '}
+                          </span>
+                        </Text>
+                      </Badge>
                     ))}
-                  </Text>
-                </div>
-              </Group>
-              <Divider />
-              <Group position="apart" pt="md" pb={undefined}>
-                <div className="flex flex-col px-4 pb-2">
-                  <Text
-                    className={clsx(
-                      inter.className,
-                      'mb-[12px] text-[10px] uppercase'
-                    )}
-                  >
-                    Начальная цена
-                  </Text>
-                  <Text
-                    className={clsx(
-                      montserrat.className,
-                      'mb-2 mt-0 text-lg leading-3'
-                    )}
-                  >
-                    {service.package[0].price}
                   </Text>
                 </div>
               </Group>
