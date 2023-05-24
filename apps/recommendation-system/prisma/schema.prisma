@@ -65,8 +65,7 @@ model Tags {
   createdAt DateTime  @default(now())
   slug      String    @unique
   service   Service[]
-  jobPost   JobPost?  @relation(fields: [jobPostId], references: [id])
-  jobPostId String?
+  jobPost   JobPost[]
 }
 
 model Service {

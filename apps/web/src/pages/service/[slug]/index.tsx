@@ -89,12 +89,15 @@ const Modal = ({ username, props, p }) => {
           ? 'Предложено'
           : `Выбранный тариф услуг будет стоить ${p.price} рублей.`}
       </Text>
-      <div className="my-2">
+      <div className="my-2 style={{ width: '100%', overflow: 'visible' }}">
         <Select
           label="Выберите заказ"
           data={jobs}
           onChange={(e) => setJob(e)}
           value={job}
+          style={{ width: '100%' }}
+          // menuStyle={{ overflow: 'visible' }}
+          // optionStyle={{ whiteSpace: 'normal' }}
         />
       </div>
       <div className="mt-2 flex flex-col gap-2">
@@ -149,6 +152,7 @@ const ServicePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
   useIssueNewAuthToken();
 
   const [recommendJobs, setrecommendJobs] = useState(3);
+  const [showAllRecommendations, setShowAllRecommendations] = useState(false);
 
   return (
     <Container
@@ -406,7 +410,7 @@ const ServicePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
       </Table>
 
       {props.user.username === username ? (
-        <div className={'w-full items-center text-center'}>
+        <div className={'w-full items-center justify-center text-center'}>
           {props.recommendJobs.length > 0 ? (
             <>
               <Divider
@@ -418,13 +422,15 @@ const ServicePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                   [inter.className]: true,
                 })}
               >
-                Предложенные заказы
+                Рекомендованные заказы
               </Text>
               <div className="grid gap-[12px] md:grid-cols-3">
                 {props.recommendJobs
                   .slice(
-                    recommendJobs > 3 ? recommendJobs - 3 : 0,
-                    recommendJobs
+                    0,
+                    showAllRecommendations
+                      ? props.recommendJobs.length
+                      : recommendJobs
                   )
                   .map((post) => (
                     <PostCard
@@ -443,15 +449,27 @@ const ServicePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                     />
                   ))}
               </div>
-              {props.recommendJobs.length > recommendJobs && (
-                <Button
-                  className="mx-auto mt-3 bg-black"
-                  onClick={() => {
-                    setrecommendJobs((prevState) => prevState + 3);
-                  }}
-                >
-                  Мне ничего не подошло
-                </Button>
+              {!showAllRecommendations && (
+                <div className="flex justify-center">
+                  {/* <div className="items-right flex mr-4">
+                    <Button
+                      className="mx-auto mt-3 bg-blue-500"
+                      onClick={() => {
+                        setrecommendJobs((prevState) => prevState + 3);
+                      }}
+                    >
+                      Мне ничего не подошло
+                    </Button>
+                  </div> */}
+                  <Button
+                    className="mx-auto mt-3 bg-blue-500"
+                    onClick={() => {
+                      setShowAllRecommendations(true);
+                    }}
+                  >
+                    Показать все
+                  </Button>
+                </div>
               )}
             </>
           ) : (
@@ -465,7 +483,7 @@ const ServicePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                   [inter.className]: true,
                 })}
               >
-                Предложенные заказы
+                Рекомендованные заказы
               </Text>
               Мы ничего не нашли...
             </>

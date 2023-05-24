@@ -32,6 +32,7 @@ export default function JobPostPageContent(props: any) {
   const { id, userType, username } = useUser();
   const [recommendService, setRecommendService] = useState(3);
   const [loading, setLoading] = useState(false);
+  const [showAllRecommendations, setShowAllRecommendations] = useState(false);
 
   useEffect(() => {
     try {
@@ -301,8 +302,10 @@ export default function JobPostPageContent(props: any) {
                 <div className="grid gap-[12px] md:grid-cols-3">
                   {props.recommendServices
                     .slice(
-                      recommendService > 3 ? recommendService - 3 : 0,
-                      recommendService
+                      0,
+                      showAllRecommendations
+                        ? props.recommendServices.length
+                        : recommendService
                     )
                     .map((post) => (
                       <PostCard
@@ -321,15 +324,25 @@ export default function JobPostPageContent(props: any) {
                       />
                     ))}
                 </div>
-                {props.recommendServices.length > recommendService && (
-                  <Button
-                    className="mx-auto mt-3 bg-black"
-                    onClick={() => {
-                      setRecommendService((prevState) => prevState + 3);
-                    }}
-                  >
-                    Мне ничего не подошло
-                  </Button>
+                {!showAllRecommendations && (
+                  <div className="flex justify-between">
+                    {/* <Button
+                      className="mx-auto mt-3 bg-blue-500"
+                      onClick={() => {
+                        setRecommendService((prevState) => prevState + 3);
+                      }}
+                    >
+                      Мне ничего не подошло
+                    </Button> */}
+                    <Button
+                      className="mx-auto mt-3 bg-blue-500"
+                      onClick={() => {
+                        setShowAllRecommendations(true);
+                      }}
+                    >
+                      Показать все
+                    </Button>
+                  </div>
                 )}
               </>
             ) : (

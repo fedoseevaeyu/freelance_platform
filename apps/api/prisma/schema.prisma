@@ -59,13 +59,12 @@ model Category {
 }
 
 model Tags {
-  id        String    @id @unique @default(cuid())
-  name      String
-  createdAt DateTime  @default(now())
-  slug      String    @unique
-  service   Service[]
-  jobPost   JobPost?  @relation(fields: [jobPostId], references: [id])
-  jobPostId String?
+  id         String    @id @unique @default(cuid())
+  name       String
+  createdAt  DateTime  @default(now())
+  slug       String    @unique
+  service    Service[]
+  jobPosts   JobPost[]
 }
 
 model Service {
