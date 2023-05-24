@@ -668,10 +668,11 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                           className="mx-1  h-full min-h-[10rem] min-w-[300px] max-w-[350px]"
                         >
                           <Link
-                            className="block font-bold"
+                            className="block"
                             href={`/service/${e.service.slug}`}
                           >
-                            {e.service.title}
+                            <strong>Услуга:</strong> {e.service.title}
+                            <br /> <strong>Заказ:</strong> {e.jobPost.title}
                           </Link>
                           <Tooltip label={`Статус`}>
                             <Badge
@@ -699,7 +700,7 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                             className="flex"
                             href={`/profile/${e.service.user.username}`}
                           >
-                            <div className="flex flex-col">
+                            <div className="flex w-full flex-col items-center text-center">
                               <Text
                                 size="md"
                                 className={clsx(montserrat.className, 'mb-0')}
@@ -716,7 +717,7 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                                 size="xs"
                                 className={clsx(
                                   montserrat.className,
-                                  'mt-0 leading-3'
+                                  'mt-1 leading-3'
                                 )}
                               >
                                 @{e.service.user.username}{' '}
