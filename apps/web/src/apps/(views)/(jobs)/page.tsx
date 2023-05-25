@@ -318,7 +318,7 @@ export default function JobPostPageContent(props: any) {
           </div>
         </div>
         <Divider orientation="horizontal" className={clsx('my-4 w-full')} />
-        <p className="prose max-w-full break-all text-center">
+        <p className="prose max-w-full text-center">
           {props.description}
         </p>
 
