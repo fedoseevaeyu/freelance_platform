@@ -67,7 +67,11 @@ export function PostCard({
         className="flex flex-col items-start justify-center"
       >
         <div className="flex w-full items-center justify-between">
-          <Text weight={500} className="" style={{ whiteSpace: 'normal' }}>
+          <Text
+            weight={500}
+            className="text-left"
+            style={{ whiteSpace: 'normal' }}
+          >
             {title}
           </Text>
         </div>
