@@ -183,6 +183,7 @@ export class JobPostService {
         },
         createdAt: true,
         id: true,
+        orders: true,
       },
       take: toTake,
       skip: toTake > 10 ? toTake - 10 : undefined,
