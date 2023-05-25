@@ -9,6 +9,7 @@ import {
   Paper,
   SimpleGrid,
   Text,
+  Tooltip,
 } from '@mantine/core';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
@@ -57,6 +58,9 @@ const JobPosts = ({ username }: Props) => {
       }>;
       createdAt: string;
       id: string;
+      orders: Array<{
+        status: string;
+      }>;
     }>;
     next?: number;
   }>({
@@ -141,6 +145,29 @@ const JobPosts = ({ username }: Props) => {
                   </Group>
                 </>
               ) : null}
+              <Divider />
+              <div className="flex flex-col p-2 ">
+                <Tooltip label={`Статус`}>
+                  <Badge
+                    className="w-fit"
+                    color={
+                      // eslint-disable-next-line no-nested-ternary
+                      post?.orders.map((e) => e.status).includes('Accepted')
+                        ? 'blue'
+                        : post?.orders.map((e) => e.status).includes('Done')
+                        ? 'green'
+                        : 'yellow'
+                    }
+                  >
+                    {/* eslint-disable-next-line no-nested-ternary */}
+                    {post?.orders.map((e) => e.status).includes('Accepted')
+                      ? 'Выполняется'
+                      : post?.orders.map((e) => e.status).includes('Done')
+                      ? 'Выполнено'
+                      : 'Пока ищем разработчика'}
+                  </Badge>
+                </Tooltip>
+              </div>
             </Paper>
           ))}
         </SimpleGrid>
