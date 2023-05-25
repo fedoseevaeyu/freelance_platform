@@ -410,7 +410,7 @@ const ServicePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
       </Table>
 
       {props.user.username === username ? (
-        <div className={'w-full items-center justify-center text-center'}>
+        <div className={'w-full'}>
           {props.recommendJobs.length > 0 ? (
             <>
               <Divider

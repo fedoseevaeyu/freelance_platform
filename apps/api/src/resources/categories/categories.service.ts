@@ -1,6 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { stringToSlug } from 'src/helpers/slug';
 import { PrismaService } from 'src/services/prisma/prisma.service';
+import {OrderStatus} from "@prisma/client";
 
 @Injectable()
 export class CategoriesService {
@@ -54,6 +55,12 @@ export class CategoriesService {
                 id: true,
                 slug: true,
               },
+            },
+          },
+          where: {
+            orders: {
+              every:
+                  {status: {in: [OrderStatus.Canceled, OrderStatus.Response]},}
             },
           },
           take: toTake,

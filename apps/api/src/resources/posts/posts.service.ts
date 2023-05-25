@@ -1,6 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../services/prisma/prisma.service';
+import { OrderStatus} from "@prisma/client";
 
+const days = (date_1) =>{
+  let difference = date_1.getTime() - new Date().getTime();
+  let TotalDays = Math.ceil(difference / (1000 * 3600 * 24));
+  return TotalDays;
+}
 @Injectable()
 export class PostsService {
   constructor(private readonly prisma: PrismaService) {}
@@ -10,6 +16,8 @@ export class PostsService {
     category: string,
     tags: string[],
     page: number,
+    price: [number, number],
+    until: Date,
   ) {
     const take = 9;
     const skip = (page - 1) * take;
@@ -24,12 +32,26 @@ export class PostsService {
 
     if (type === 'service') {
       const services = await this.prisma.service.findMany({
-        where,
+        where: {
+          ...where,
+          package: {
+            some: {
+              price: {
+                  lte: Number(price[1]),
+                  gte: Number(price[0]),
+              },
+              deliveryDays: {
+                lte: days(until),
+              }
+            }
+          }
+        },
         take,
         skip,
         include: {
           category: true,
           tags: true,
+          package: true,
         },
         orderBy: { createdAt: 'desc' },
       });
@@ -43,7 +65,20 @@ export class PostsService {
       };
     } else {
       const jobPosts = await this.prisma.jobPost.findMany({
-        where,
+        where: {
+          ...where,
+          orders: {
+            every:
+                {status: {in: [OrderStatus.Canceled, OrderStatus.Response]},}
+          },
+          budget: {
+              lte: Number(price[1]),
+              gte: Number(price[0]),
+          },
+          deadline: {
+            lte: until,
+          }
+        },
         take,
         skip,
         include: {

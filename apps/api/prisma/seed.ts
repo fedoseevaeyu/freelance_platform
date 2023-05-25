@@ -784,9 +784,9 @@ async function generateServices(freelancers) {
             },
             features: {
               createMany: {
-                data: service.includes.map((e) => ({
+                data: service.includes.map((e,i) => ({
                   name: e,
-                  includedIn: packages.map((p) => p.name),
+                  includedIn: packages.slice(0, i < 2 ? 2 : i < 4 ? 4 : 6).map((p) => p.name),
                 })),
               },
             },

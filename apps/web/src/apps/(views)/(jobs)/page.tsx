@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import { Container } from '@components/container';
 import { inter } from '@fonts';
 import { useUser } from '@hooks/user';
@@ -7,14 +8,19 @@ import {
   Button,
   Divider,
   Image,
+  MultiSelect,
+  Paper,
+  RangeSlider,
   Select,
   Text,
   Tooltip,
 } from '@mantine/core';
+import { DatePickerInput } from '@mantine/dates';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import clsx from 'clsx';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Carousel } from 'react-responsive-carousel';
 
 import { routes } from '../../config/routes';
@@ -22,6 +28,24 @@ import { PostCard } from '../../ui/card/post';
 import { readCookie } from '../../utils/cookie';
 import { profileImageRouteGenerator } from '../../utils/profile';
 import { assetURLBuilder, URLBuilder } from '../../utils/url';
+
+async function fetchPosts(
+  category: any,
+  tags: any[],
+  page: any,
+  price: [number, number],
+  until: Date
+) {
+  return axios
+    .get(
+      URLBuilder(
+        `/posts?category=${category}&price=${Number(price[0])}&price=${Number(
+          price[1]
+        )}&until=${until}&tags=${tags.join(',')}&page=${page}`
+      )
+    )
+    .then((e) => e.data);
+}
 
 export default function JobPostPageContent(props: any) {
   const [send, setSend] = useState(false);
@@ -33,6 +57,36 @@ export default function JobPostPageContent(props: any) {
   const [recommendService, setRecommendService] = useState(3);
   const [loading, setLoading] = useState(false);
   const [showAllRecommendations, setShowAllRecommendations] = useState(false);
+
+  // search
+  const [category, setCategory] = useState('');
+  const [tags, setTags] = useState<any[]>([]);
+  const [price, setPrice] = useState<[number, number]>([0, 10000]);
+  const [until, setUntil] = useState(new Date(2034, 1));
+
+  const { data: categoriesOptions } = useQuery<{ id: string; name: string }[]>({
+    queryKey: ['categories'],
+    queryFn: async () => {
+      const res = await axios.get(URLBuilder('/categories'));
+      return res.data;
+    },
+  });
+
+  const { data: tagsOptions } = useQuery<{ id: string; name: string }[]>({
+    queryKey: ['tags'],
+    queryFn: async () => {
+      const res = await axios.get(URLBuilder('/tags'));
+      return res.data;
+    },
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: true,
+  });
+
+  const { data, isLoading, isError } = useInfiniteQuery(
+    ['posts', category, tags, price, until],
+    ({ pageParam = 1 }) => fetchPosts(category, tags, pageParam, price, until)
+  );
 
   useEffect(() => {
     try {
@@ -62,6 +116,16 @@ export default function JobPostPageContent(props: any) {
       userType === 'Freelancer'
     ) {
       const my = props.orders.find((e: any) => e.freelancerId === id);
+      if (my) {
+        setSend(true);
+        setStatus(my.status);
+      }
+    }
+  }, [id, userType, username]);
+
+  useEffect(() => {
+    if (username && username === props.user.username && userType === 'Client') {
+      const my = props.orders.find((e: any) => e.clientId === id);
       if (my) {
         setSend(true);
         setStatus(my.status);
@@ -183,9 +247,11 @@ export default function JobPostPageContent(props: any) {
                     : 'green'
                 }
               >
+                {/* eslint-disable-next-line no-nested-ternary */}
                 {status === 'Response'
                   ? 'Предложено'
-                  : status === 'Accepted'
+                  : // eslint-disable-next-line no-nested-ternary
+                  status === 'Accepted'
                   ? 'Выполняется'
                   : status === 'Canceled'
                   ? 'Отклонено'
@@ -312,6 +378,68 @@ export default function JobPostPageContent(props: any) {
                 >
                   Рекомендованные услуги
                 </Text>
+                {showAllRecommendations && (
+                  <Paper
+                    p="md"
+                    shadow="xs"
+                    className="mb-[24px] flex-wrap gap-4"
+                  >
+                    <div className="flex gap-4">
+                      <Select
+                        className="w-full"
+                        placeholder="Выберите категорию"
+                        value={props.recommendServices.category}
+                        searchable
+                        onChange={(value) => setCategory(value as string)}
+                        data={
+                          categoriesOptions?.map((e) => ({
+                            value: e.id,
+                            label: e.name,
+                          })) ?? []
+                        }
+                      />
+                      <MultiSelect
+                        className="w-full"
+                        placeholder="Выберите тэги"
+                        searchable
+                        value={props.recommendServices.tags}
+                        onChange={(value) => setTags(value)}
+                        data={
+                          tagsOptions?.map((e) => ({
+                            value: e.id,
+                            label: e.name,
+                          })) ?? []
+                        }
+                      />
+                      <DatePickerInput
+                        placeholder="Укажите дедлайн"
+                        mx="auto"
+                        maw={400}
+                        className={'w-full items-center'}
+                        allowDeselect
+                        onChange={(e) => setUntil(e ?? new Date(2034, 1))}
+                      />
+                    </div>
+
+                    <div className="mt-3 flex flex-col gap-4">
+                      <Text>Цена</Text>
+                      <div className="flex justify-between">
+                        <RangeSlider
+                          value={props.recommendServices.price}
+                          step={100}
+                          onChange={setPrice}
+                          marks={[
+                            { value: 0, label: '0' },
+                            { value: 100000, label: '100000' },
+                          ]}
+                          max={100000}
+                          className={'h-[30px] w-[50%]'}
+                        />
+                      </div>
+                    </div>
+                  </Paper>
+                )}
+
                 <div className="grid gap-[12px] md:grid-cols-3">
                   {props.recommendServices
                     .slice(
@@ -357,6 +485,21 @@ export default function JobPostPageContent(props: any) {
                     </Button>
                   </div>
                 )}
+              </>
+            ) : userType !== 'Freelancer' && status === 'Done' ? (
+              <>
+                <Divider
+                  orientation="horizontal"
+                  className={clsx('my-4 w-full')}
+                />
+                <Text
+                  className={clsx('mb-4 text-center text-2xl font-bold', {
+                    [inter.className]: true,
+                  })}
+                >
+                  Рекомендованные услуги
+                </Text>
+                Тут ничего нет, потому что заказ уже был выполнен :)
               </>
             ) : (
               <>

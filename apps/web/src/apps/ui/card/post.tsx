@@ -47,6 +47,7 @@ export function PostCard({
         <Card.Section>
           <Image
             src={
+              // eslint-disable-next-line no-nested-ternary
               image.includes('fallback')
                 ? '/images/fallback.webp'
                 : resolveImageUrl
@@ -66,7 +67,7 @@ export function PostCard({
         className="flex flex-col items-start justify-center"
       >
         <div className="flex w-full items-center justify-between">
-          <Text weight={500} lineClamp={1} className="break-all">
+          <Text weight={500} className="" style={{ whiteSpace: 'normal' }}>
             {title}
           </Text>
         </div>
