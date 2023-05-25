@@ -463,7 +463,7 @@ export default function JobPostPageContent(props: any) {
                         }
 
                         // Filter by tags
-                        /* if (tags.length > 0) {
+                         if (tags.length > 0) {
                           const postTags = post.tags.map((tag: any) => tag.id);
                           if (
                             !tags.some((tag: any) => postTags.includes(tag))
@@ -472,18 +472,18 @@ export default function JobPostPageContent(props: any) {
                           }
                         }
 
-                        // Filter by price
-                        const [minPrice, maxPrice] = price;
-                        const postPrice = post.price || 0;
-                        if (postPrice < minPrice || postPrice > maxPrice) {
-                          return false;
-                        } */
+                        /* // Filter by price
+                         const [minPrice, maxPrice] = price;
+                         const postPrice = post.price || 0;
+                         if (postPrice < minPrice || postPrice > maxPrice) {
+                           return false;
+                         }
 
                         // Filter by until date
                         const postUntil = new Date(post.until);
                         if (postUntil > until) {
                           return false;
-                        }
+                        } */
 
                         return true;
                       })
