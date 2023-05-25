@@ -57,12 +57,7 @@ export class CategoriesService {
               },
             },
           },
-          where: {
-            orders: {
-              every:
-                  {status: {in: [OrderStatus.Canceled, OrderStatus.Response]},}
-            },
-          },
+
           take: toTake,
           skip: toTake > 10 ? toTake - 10 : undefined,
           orderBy: [
@@ -72,6 +67,10 @@ export class CategoriesService {
           ],
 
           where: {
+            orders: {
+              every:
+                  {status: {in: [OrderStatus.Canceled, OrderStatus.Response]},}
+            },
             category: {
               slug,
             },

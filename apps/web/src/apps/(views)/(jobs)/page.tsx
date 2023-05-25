@@ -10,12 +10,10 @@ import {
   Image,
   MultiSelect,
   Paper,
-  RangeSlider,
   Select,
   Text,
   Tooltip,
 } from '@mantine/core';
-import { DatePickerInput } from '@mantine/dates';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import clsx from 'clsx';
@@ -30,6 +28,7 @@ import { profileImageRouteGenerator } from '../../utils/profile';
 import { assetURLBuilder, URLBuilder } from '../../utils/url';
 
 async function fetchPosts(
+  type: any,
   category: any,
   tags: any[],
   page: any,
@@ -39,9 +38,11 @@ async function fetchPosts(
   return axios
     .get(
       URLBuilder(
-        `/posts?category=${category}&price=${Number(price[0])}&price=${Number(
-          price[1]
-        )}&until=${until}&tags=${tags.join(',')}&page=${page}`
+        `/posts?type=${type}category=${category}&price=${Number(
+          price[0]
+        )}&price=${Number(price[1])}&until=${until}&tags=${tags.join(
+          ','
+        )}&page=${page}`
       )
     )
     .then((e) => e.data);
@@ -57,36 +58,6 @@ export default function JobPostPageContent(props: any) {
   const [recommendService, setRecommendService] = useState(3);
   const [loading, setLoading] = useState(false);
   const [showAllRecommendations, setShowAllRecommendations] = useState(false);
-
-  // search
-  const [category, setCategory] = useState('');
-  const [tags, setTags] = useState<any[]>([]);
-  const [price, setPrice] = useState<[number, number]>([0, 10000]);
-  const [until, setUntil] = useState(new Date(2034, 1));
-
-  const { data: categoriesOptions } = useQuery<{ id: string; name: string }[]>({
-    queryKey: ['categories'],
-    queryFn: async () => {
-      const res = await axios.get(URLBuilder('/categories'));
-      return res.data;
-    },
-  });
-
-  const { data: tagsOptions } = useQuery<{ id: string; name: string }[]>({
-    queryKey: ['tags'],
-    queryFn: async () => {
-      const res = await axios.get(URLBuilder('/tags'));
-      return res.data;
-    },
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-    refetchOnReconnect: true,
-  });
-
-  const { data, isLoading, isError } = useInfiniteQuery(
-    ['posts', category, tags, price, until],
-    ({ pageParam = 1 }) => fetchPosts(category, tags, pageParam, price, until)
-  );
 
   useEffect(() => {
     try {
@@ -132,6 +103,43 @@ export default function JobPostPageContent(props: any) {
       }
     }
   }, [id, userType, username]);
+
+  // search
+  const type = 'service';
+  const [category, setCategory] = useState('');
+  const [tags, setTags] = useState<any[]>([]);
+  const [price, setPrice] = useState<[number, number]>([0, 10000]);
+  const [until, setUntil] = useState(new Date(2034, 1));
+
+  const { data: categoriesOptions } = useQuery<{ id: string; name: string }[]>({
+    queryKey: ['categories'],
+    queryFn: async () => {
+      const res = await axios.get(URLBuilder('/categories'));
+      return res.data;
+    },
+  });
+
+  const { data: tagsOptions } = useQuery<{ id: string; name: string }[]>({
+    queryKey: ['tags'],
+    queryFn: async () => {
+      const res = await axios.get(URLBuilder('/tags'));
+      return res.data;
+    },
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: true,
+  });
+
+  const recommendServicesSlice = props.recommendServices.slice(
+    0,
+    showAllRecommendations ? props.recommendServices.length : recommendService
+  );
+
+  const { data, isLoading, isError } = useInfiniteQuery(
+    ['posts', type, category, tags, price, until],
+    ({ pageParam = 1 }) =>
+      fetchPosts(type, category, tags, pageParam, price, until)
+  );
 
   return (
     <Container
@@ -388,7 +396,7 @@ export default function JobPostPageContent(props: any) {
                       <Select
                         className="w-full"
                         placeholder="Выберите категорию"
-                        value={props.recommendServices.category}
+                        value={category}
                         searchable
                         onChange={(value) => setCategory(value as string)}
                         data={
@@ -402,7 +410,7 @@ export default function JobPostPageContent(props: any) {
                         className="w-full"
                         placeholder="Выберите тэги"
                         searchable
-                        value={props.recommendServices.tags}
+                        value={tags}
                         onChange={(value) => setTags(value)}
                         data={
                           tagsOptions?.map((e) => ({
@@ -411,7 +419,7 @@ export default function JobPostPageContent(props: any) {
                           })) ?? []
                         }
                       />
-                      <DatePickerInput
+                      {/* <DatePickerInput
                         placeholder="Укажите дедлайн"
                         mx="auto"
                         maw={400}
@@ -420,14 +428,16 @@ export default function JobPostPageContent(props: any) {
                         onChange={(e) => setUntil(e ?? new Date(2034, 1))}
                       />
                     </div>
-
-                    <div className="mt-3 flex flex-col gap-4">
+*/}
+                      {/* <div className="mt-3 flex flex-col gap-4">
                       <Text>Цена</Text>
-                      <div className="flex justify-between">
+                      <div className="flex">
                         <RangeSlider
-                          value={props.recommendServices.price}
+                          value={price}
                           step={100}
-                          onChange={setPrice}
+                          onChange={(value) =>
+                            setPrice(value as [number, number])
+                          }
                           marks={[
                             { value: 0, label: '0' },
                             { value: 100000, label: '100000' },
@@ -435,36 +445,67 @@ export default function JobPostPageContent(props: any) {
                           max={100000}
                           className={'h-[30px] w-[50%]'}
                         />
-                      </div>
+                      </div> */}
                     </div>
                   </Paper>
                 )}
 
-                <div className="grid gap-[12px] md:grid-cols-3">
-                  {props.recommendServices
-                    .slice(
-                      0,
-                      showAllRecommendations
-                        ? props.recommendServices.length
-                        : recommendService
-                    )
-                    .map((post) => (
-                      <PostCard
-                        {...post}
-                        type="service"
-                        badgeLabel={post.category.name}
-                        tags={post.tags
-                          .map((e: any) => e.name)
-                          .sort((a: any, b: any) => a.length - b.length)}
-                        key={post.slug}
-                        image={
-                          post.bannerImage.includes('fallback')
-                            ? '/images/fallback.webp'
-                            : post.bannerImage
+                {isLoading && <p>Загрузка...</p>}
+                {isError && <p>Что-то пошло не так...</p>}
+
+                {!isLoading && !isError && (
+                  <div className="grid gap-[12px] md:grid-cols-3">
+                    {recommendServicesSlice
+                      .filter((post: any) => {
+                        // Filter by category
+                        if (category && post.category.id !== category) {
+                          return false;
                         }
-                      />
-                    ))}
-                </div>
+
+                        // Filter by tags
+                        /* if (tags.length > 0) {
+                          const postTags = post.tags.map((tag: any) => tag.id);
+                          if (
+                            !tags.some((tag: any) => postTags.includes(tag))
+                          ) {
+                            return false;
+                          }
+                        }
+
+                        // Filter by price
+                        const [minPrice, maxPrice] = price;
+                        const postPrice = post.price || 0;
+                        if (postPrice < minPrice || postPrice > maxPrice) {
+                          return false;
+                        } */
+
+                        // Filter by until date
+                        const postUntil = new Date(post.until);
+                        if (postUntil > until) {
+                          return false;
+                        }
+
+                        return true;
+                      })
+                      .map((post: any) => (
+                        <PostCard
+                          {...post}
+                          type="service"
+                          badgeLabel={post.category.name}
+                          price={post.budget}
+                          tags={post.tags
+                            .map((e: any) => e.name)
+                            .sort((a: any, b: any) => a.length - b.length)}
+                          key={post.slug}
+                          image={
+                            post.bannerImage.includes('fallback')
+                              ? '/images/fallback.webp'
+                              : post.bannerImage
+                          }
+                        />
+                      ))}
+                  </div>
+                )}
                 {!showAllRecommendations && (
                   <div className="flex justify-between">
                     {/* <Button
