@@ -77,8 +77,27 @@ export default function JobPostPageContent(props: any) {
       mb="xl"
     >
       <div className="flex flex-col items-center justify-center ">
-        <div className="flex items-center justify-between gap-6">
+        <div className="flex flex-col flex-wrap items-center gap-2">
           <h1 className="break-all text-3xl font-bold">{props.title}</h1>
+          {props.budget && (
+            <Tooltip label={`Бюджет этого заказа составляет ${props.budget}`}>
+              <Badge variant="light" className="mt-1">
+                бюджет: {props.budget} руб.
+              </Badge>
+            </Tooltip>
+          )}
+          {props.deadline && (
+            <Tooltip
+              label={`Необходимо выполнить этот проект до ${new Date(
+                props.deadline
+              ).toLocaleDateString()}`}
+            >
+              <Badge variant="light" className="mt-1">
+                дедлайн: {new Date(props.deadline).toLocaleDateString()}
+              </Badge>
+            </Tooltip>
+          )}
+
           {username !== props.user.username &&
             userType === 'Freelancer' &&
             !send &&
@@ -87,7 +106,7 @@ export default function JobPostPageContent(props: any) {
                 {!choice && (
                   <Button
                     variant="filled"
-                    className="bg-black text-white"
+                    className="mt-2 bg-blue-500 text-white"
                     onClick={() => setChoice(true)}
                   >
                     Сотрудничать
@@ -99,10 +118,12 @@ export default function JobPostPageContent(props: any) {
                       data={services}
                       onChange={(e) => setService(e)}
                       value={service}
+                      searchable
+                      className="w-full"
                     />
                     <Button
                       variant="filled"
-                      className="bg-black text-white"
+                      className="bg-blue-500 text-white"
                       disabled={!service || loading}
                       onClick={() => {
                         setLoading(true);
@@ -137,25 +158,44 @@ export default function JobPostPageContent(props: any) {
               </>
             )}
         </div>
-        {props.budget && (
-          <Tooltip label={`Бюджет этого заказа составляет ${props.budget}`}>
-            <Badge variant="light" className="mt-2">
-              бюджет: {props.budget} руб.
-            </Badge>
-          </Tooltip>
-        )}
-        {props.deadline && (
+        {/* {(props.orders.find((props: any) => props.jobPostId === id).status && (
           <Tooltip
-            label={`Необходимо выполнить этот проект до ${new Date(
-              props.deadline
-            ).toLocaleDateString()}`}
+            label={`Статус этого заказа ${props.orders.find((props: any) => props.jobPostId === id).status}`}
           >
             <Badge variant="light" className="mt-2">
-              дедлайн: {new Date(props.deadline).toLocaleDateString()}
+              {props.orders.find((props: any) => props.jobPostId === id).status}
             </Badge>
           </Tooltip>
+        )} */}
+        {send && (
+          <div>
+            <Tooltip label={`Статус`}>
+              <Badge
+                variant="light"
+                className="mt-3"
+                color={
+                  status === 'Response'
+                    ? 'yellow'
+                    : status === 'Accepted'
+                    ? 'blue'
+                    : status === 'Canceled'
+                    ? 'red'
+                    : 'green'
+                }
+              >
+                {status === 'Response'
+                  ? 'Предложено'
+                  : status === 'Accepted'
+                  ? 'Выполняется'
+                  : status === 'Canceled'
+                  ? 'Отклонено'
+                  : 'Выполнено'}
+              </Badge>
+            </Tooltip>
+          </div>
         )}
-        <div className="mt-2 flex flex-row flex-wrap items-center justify-center">
+
+        <div className="mt-3 flex flex-row flex-wrap items-center justify-center">
           <Avatar
             src={
               props.user.avatarUrl &&
@@ -185,33 +225,6 @@ export default function JobPostPageContent(props: any) {
                   @{props.user.username}
                 </Link>
               </div>
-
-              {send && (
-                <div className="ml-24 flex flex-col">
-                  <Tooltip label={`Статус`}>
-                    <Badge
-                      className="w-fit"
-                      color={
-                        status === 'Response'
-                          ? 'yellow'
-                          : status === 'Accepted'
-                          ? 'blue'
-                          : status === 'Canceled'
-                          ? 'red'
-                          : 'green'
-                      }
-                    >
-                      {status === 'Response'
-                        ? 'Предложено'
-                        : status === 'Accepted'
-                        ? 'Выполняется'
-                        : status === 'Canceled'
-                        ? 'Отклонено'
-                        : 'Выполнено'}
-                    </Badge>
-                  </Tooltip>
-                </div>
-              )}
             </Text>
           </div>
         </div>
@@ -231,7 +244,7 @@ export default function JobPostPageContent(props: any) {
           </div>
         </div>
         <Divider orientation="horizontal" className={clsx('my-4 w-full')} />
-        <p className="prose w-full max-w-full break-words text-xl">
+        <p className="prose max-w-full break-all text-center">
           {props.description}
         </p>
 
