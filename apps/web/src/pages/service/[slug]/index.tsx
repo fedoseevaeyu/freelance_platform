@@ -10,6 +10,8 @@ import {
   Button,
   Divider,
   Image,
+  MultiSelect,
+  Paper,
   Select,
   Table,
   Text,
@@ -18,6 +20,7 @@ import {
 import { upperFirst } from '@mantine/hooks';
 import { openModal } from '@mantine/modals';
 import { IconCheck, IconX } from '@tabler/icons-react';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import clsx from 'clsx';
 import type {
@@ -28,7 +31,7 @@ import type {
 } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Carousel } from 'react-responsive-carousel';
 
 import type { Service } from '~/types/service';
@@ -40,6 +43,27 @@ import { MetaTags } from '../../../apps/ui/meta-tags';
 import { readCookie } from '../../../apps/utils/cookie';
 import { profileImageRouteGenerator } from '../../../apps/utils/profile';
 import { assetURLBuilder, URLBuilder } from '../../../apps/utils/url';
+
+async function fetchPosts(
+  type: any,
+  category: any,
+  tags: any[],
+  page: any,
+  price: [number, number],
+  until: Date
+) {
+  return axios
+    .get(
+      URLBuilder(
+        `/posts?type=${type}category=${category}&price=${Number(
+          price[0]
+        )}&price=${Number(price[1])}&until=${until}&tags=${tags.join(
+          ','
+        )}&page=${page}`
+      )
+    )
+    .then((e) => e.data);
+}
 
 // @ts-ignore
 const Modal = ({ username, props, p }) => {
@@ -153,6 +177,43 @@ const ServicePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
 
   const [recommendJobs, setrecommendJobs] = useState(3);
   const [showAllRecommendations, setShowAllRecommendations] = useState(false);
+
+  // search
+  const type = 'job';
+  const [category, setCategory] = useState('');
+  const [tags, setTags] = useState<any[]>([]);
+  const [price, setPrice] = useState<[number, number]>([0, 10000]);
+  const [until, setUntil] = useState(new Date(2034, 1));
+
+  const { data: categoriesOptions } = useQuery<{ id: string; name: string }[]>({
+    queryKey: ['categories'],
+    queryFn: async () => {
+      const res = await axios.get(URLBuilder('/categories'));
+      return res.data;
+    },
+  });
+
+  const { data: tagsOptions } = useQuery<{ id: string; name: string }[]>({
+    queryKey: ['tags'],
+    queryFn: async () => {
+      const res = await axios.get(URLBuilder('/tags'));
+      return res.data;
+    },
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: true,
+  });
+
+  const recommendJobSlice = props.recommendJobs.slice(
+    0,
+    showAllRecommendations ? props.recommendJobs.length : recommendJobs
+  );
+
+  const { data, isLoading, isError } = useInfiniteQuery(
+    ['posts', type, category, tags, price, until],
+    ({ pageParam = 1 }) =>
+      fetchPosts(type, category, tags, pageParam, price, until)
+  );
 
   return (
     <Container
@@ -424,31 +485,122 @@ const ServicePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
               >
                 Рекомендованные заказы
               </Text>
-              <div className="grid gap-[12px] md:grid-cols-3">
-                {props.recommendJobs
-                  .slice(
-                    0,
-                    showAllRecommendations
-                      ? props.recommendJobs.length
-                      : recommendJobs
-                  )
-                  .map((post) => (
-                    <PostCard
-                      {...post}
-                      type="job"
-                      badgeLabel={post.category.name}
-                      tags={post.tags
-                        .map((e: any) => e.name)
-                        .sort((a: any, b: any) => a.length - b.length)}
-                      key={post.slug}
-                      image={
-                        post.bannerImage?.includes('fallback')
-                          ? '/images/fallback.webp'
-                          : post.bannerImage
+
+              {showAllRecommendations && (
+                <Paper p="md" shadow="xs" className="mb-[24px] flex-wrap gap-4">
+                  <div className="flex gap-4">
+                    <Select
+                      className="w-full"
+                      placeholder="Выберите категорию"
+                      value={category}
+                      searchable
+                      onChange={(value) => setCategory(value as string)}
+                      data={
+                        categoriesOptions?.map((e) => ({
+                          value: e.id,
+                          label: e.name,
+                        })) ?? []
                       }
                     />
-                  ))}
-              </div>
+                    <MultiSelect
+                      className="w-full"
+                      placeholder="Выберите тэги"
+                      searchable
+                      value={tags}
+                      onChange={(value) => setTags(value)}
+                      data={
+                        tagsOptions?.map((e) => ({
+                          value: e.id,
+                          label: e.name,
+                        })) ?? []
+                      }
+                    />
+                    {/* <DatePickerInput
+                        placeholder="Укажите дедлайн"
+                        mx="auto"
+                        maw={400}
+                        className={'w-full items-center'}
+                        allowDeselect
+                        onChange={(e) => setUntil(e ?? new Date(2034, 1))}
+                      />
+                    </div>
+*/}
+                    {/* <div className="mt-3 flex flex-col gap-4">
+                      <Text>Цена</Text>
+                      <div className="flex">
+                        <RangeSlider
+                          value={price}
+                          step={100}
+                          onChange={(value) =>
+                            setPrice(value as [number, number])
+                          }
+                          marks={[
+                            { value: 0, label: '0' },
+                            { value: 100000, label: '100000' },
+                          ]}
+                          max={100000}
+                          className={'h-[30px] w-[50%]'}
+                        />
+                      </div> */}
+                  </div>
+                </Paper>
+              )}
+
+              {isLoading && <p>Загрузка...</p>}
+              {isError && <p>Что-то пошло не так...</p>}
+
+              {!isLoading && !isError && (
+                <div className="grid gap-[12px] md:grid-cols-3">
+                  {recommendJobSlice
+                    .filter((post: any) => {
+                      // Filter by category
+                      if (category && post.category.id !== category) {
+                        return false;
+                      }
+
+                      // Filter by tags
+                      /* if (tags.length > 0) {
+                        const postTags = post.tags.map((tag: any) => tag.id);
+                        if (
+                          !tags.some((tag: any) => postTags.includes(tag))
+                        ) {
+                          return false;
+                        }
+                      }
+
+                      // Filter by price
+                      const [minPrice, maxPrice] = price;
+                      const postPrice = post.price || 0;
+                      if (postPrice < minPrice || postPrice > maxPrice) {
+                        return false;
+                      } */
+
+                      // Filter by until date
+                      const postUntil = new Date(post.until);
+                      if (postUntil > until) {
+                        return false;
+                      }
+
+                      return true;
+                    })
+                    .map((post) => (
+                      <PostCard
+                        {...post}
+                        type="job"
+                        badgeLabel={post.category.name}
+                        tags={post.tags
+                          .map((e: any) => e.name)
+                          .sort((a: any, b: any) => a.length - b.length)}
+                        key={post.slug}
+                        image={
+                          post.bannerImage?.includes('fallback')
+                            ? '/images/fallback.webp'
+                            : post.bannerImage
+                        }
+                      />
+                    ))}
+                </div>
+              )}
               {!showAllRecommendations && (
                 <div className="flex justify-center">
                   {/* <div className="items-right flex mr-4">
@@ -485,7 +637,7 @@ const ServicePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
               >
                 Рекомендованные заказы
               </Text>
-              Мы ничего не нашли...
+              <Text className={'text-center'}>Мы ничего не нашли...</Text>
             </>
           )}
         </div>
