@@ -107,29 +107,36 @@ def calculate_similarity(services: List[Dict], job_posts: List[Dict], embeddings
     cosine_similarities = cosine_similarity(embeddings)
 
     # Добавление весов
+    print('========== НАЧАЛО ДЕБАГА =============')
     for i, service in enumerate(services):
         for j, job in enumerate(job_posts):
+            print('======= услуга: ',service['title'],'заказ: ',job['title'], '======')
             # добавление веса за совпадение категорий
             if service['category_id'] == job['category_id']:
                 cosine_similarities[i, j + len(services)] += category_weight
                 cosine_similarities[j + len(services), i] += category_weight
+                print('category', cosine_similarities[i, j + len(services)], cosine_similarities[j + len(services), i])
 
             # добавление веса за совпадение тегов
             matching_tags = set(service['tag_ids']) & set(job['tag_ids'])
             if matching_tags:
                 cosine_similarities[i, j + len(services)] += tag_weight * len(matching_tags)
                 cosine_similarities[j + len(services), i] += tag_weight * len(matching_tags)
+                print('tags', cosine_similarities[i, j + len(services)], cosine_similarities[j + len(services), i])
 
             # добавление веса, если услуга может быть выполнена до дедлайна заказа
             if service['delivery_days'] and job['delivery_days'] and min(service['delivery_days']) <= job[
                 'delivery_days']:
                 cosine_similarities[i, j + len(services)] += delivery_days_weight
                 cosine_similarities[j + len(services), i] += delivery_days_weight
+                print('delivery_days', cosine_similarities[i, j + len(services)], cosine_similarities[j + len(services), i])
 
             # добавление веса, если стоимость услуги входит в бюджет заказа
             if service['prices'] and job['price'] and min(service['prices']) <= job['price']:
                 cosine_similarities[i, j + len(services)] += price_weight
                 cosine_similarities[j + len(services), i] += price_weight
+                print('price', cosine_similarities[i, j + len(services)], cosine_similarities[j + len(services), i])
+
 
     return cosine_similarities
 
@@ -155,11 +162,15 @@ async def get_recommendations() -> Dict:
         'orders': []
     }
 
+    print('======== GET RECOMMENDATION ======')
     # Для каждой услуги три наиболее подходящих заказа
     for i, service in enumerate(services):
+
         similarity_scores = cosine_similarities[i, len(services):]
         top_job_indices = np.where(similarity_scores > 0.8)[0]  # Фильтрация по коэффициенту схожести
         top_jobs = [job_posts[j] for j in top_job_indices]
+
+
         recommendations['services'].append({
             'service': service,
             'recommendations': top_jobs
@@ -250,6 +261,7 @@ async def clear_recommendations_cache():
     load_job_posts.cache_clear()
     embed_text_using_bert.cache_clear()
     get_recommendations.cache_clear()
+    normalize_parameters.cache_clear()
     return jsonify({
         'status': 'success'
     })
