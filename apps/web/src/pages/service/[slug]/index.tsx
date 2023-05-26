@@ -99,7 +99,7 @@ const Modal = ({ username, props, p }) => {
 
   return (
     <div
-      className={clsx('', {
+      className={clsx('modal-container', {
         [inter.className]: true,
       })}
     >
@@ -110,7 +110,7 @@ const Modal = ({ username, props, p }) => {
       </Text>
       <Text>
         {send
-          ? 'Предложено'
+          ? null
           : `Выбранный тариф услуг будет стоить ${p.price} рублей.`}
       </Text>
       <div className="my-2 style={{ width: '100%', overflow: 'visible' }}">
@@ -120,9 +120,11 @@ const Modal = ({ username, props, p }) => {
           onChange={(e) => setJob(e)}
           value={job}
           style={{ width: '100%' }}
+          className="custom-select"
           // menuStyle={{ overflow: 'visible' }}
           // optionStyle={{ whiteSpace: 'normal' }}
-        />
+        >
+        </Select>
       </div>
       <div className="mt-2 flex flex-col gap-2">
         <Button
@@ -164,6 +166,22 @@ const Modal = ({ username, props, p }) => {
           {send ? 'Предложено' : 'Предложить'}
         </Button>
       </div>
+      <style jsx>{`
+        .modal-container {
+          height: 400px;
+        }
+      `}</style>
+      <style>{`
+        .custom-select {
+        height: auto;
+        max-height: 200px; /* Ограничение максимальной высоты */
+        overflow-y: auto;
+      }
+
+        .custom-option {
+          white-space: normal; /* Позволяет тексту переноситься на новые строки */
+      }
+      `}</style>
     </div>
   );
 };
@@ -561,9 +579,7 @@ const ServicePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = (
                       // Filter by tags
                       if (tags.length > 0) {
                         const postTags = post.tags.map((tag: any) => tag.id);
-                        if (
-                          !tags.some((tag: any) => postTags.includes(tag))
-                        ) {
+                        if (!tags.some((tag: any) => postTags.includes(tag))) {
                           return false;
                         }
                       }
